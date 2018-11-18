@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: nl.pvanassen.christmas.tree.controller
+---
+testFramework: spek
+sourceLanguage: kotlin

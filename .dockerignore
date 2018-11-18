@@ -1,0 +1,6 @@
+src/
+target/*javadoc.jar
+target/*sources.jar
+target/*/**
+.git
+.idea
