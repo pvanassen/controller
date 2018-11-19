@@ -7,7 +7,7 @@ object Application {
     @JvmStatic
     fun main(args: Array<String>) {
         Micronaut.build()
-                .packages("christmas.tree.controller")
+                .packages("nl.pvanassen.christmas.tree.controller")
                 .mainClass(Application.javaClass)
                 .start()
     }

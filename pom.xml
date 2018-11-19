@@ -14,7 +14,7 @@
         <micronaut.version>1.0.1</micronaut.version>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <exec.mainClass>nl.pvanassen.nl.pvanassen.christmas.tree.controller.Application</exec.mainClass>
+        <exec.mainClass>nl.pvanassen.christmas.tree.controller.Application</exec.mainClass>
         <kotlinVersion>1.2.61</kotlinVersion>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     </properties>
