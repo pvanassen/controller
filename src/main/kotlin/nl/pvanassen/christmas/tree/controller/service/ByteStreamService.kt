@@ -1,20 +1,10 @@
 package nl.pvanassen.christmas.tree.controller.service
 
-import fr.bmartel.opc.OpcClient
 import fr.bmartel.opc.PixelStrip
+import javax.inject.Singleton
 
-class ByteStreamService(strips:Int, private val ledsPerStrip:Int, private val opcClient:OpcClient) {
-    private val pixelStrips:Array<PixelStrip>
-
-    init {
-        val devices = Math.ceil(strips.toDouble() / 8).toInt()
-        pixelStrips = (0 until devices).flatMap {
-            val opcDevice = opcClient.addDevice()
-            (0 until 8).map {
-                opcDevice.addPixelStrip(it, ledsPerStrip)
-            }
-        }.toTypedArray()
-    }
+@Singleton
+class ByteStreamService(private val ledsPerStrip:Int, private val pixelStrips:Array<PixelStrip>) {
 
     fun pushByteStream(byteArray: ByteArray) {
         (0 until byteArray.size step 3).forEach {
@@ -29,8 +19,8 @@ class ByteStreamService(strips:Int, private val ledsPerStrip:Int, private val op
     }
 
     private fun setPixelColor(arrayPos:Int, color:Int) {
-        val pixelStrip = pixelStrips[arrayPos / ledsPerStrip]
-        val pixel = arrayPos % ledsPerStrip
+        val pixelStrip = pixelStrips[(arrayPos / 3) / ledsPerStrip]
+        val pixel = (arrayPos / 3) % ledsPerStrip
         pixelStrip.setPixelColor(pixel, color)
     }
 
