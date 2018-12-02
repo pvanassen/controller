@@ -1,3 +1,32 @@
 micronaut:
-    application:
-        name: christmas-tree-controller
+  application:
+    name: christmas-tree-controller
+
+christmas:
+  tree:
+    strips: ${LED_STRIPS:16}
+    leds-per-strip: ${LEDS_PER_STRIP:60}
+    fps: ${FPS:60}
+    opc:
+      hostname: ${OPC_HOSTNAME:localhost}
+      port: ${OPC_PORT:7890}
+consul:
+  client:
+    registration:
+      enabled: ${CONSUL_ENABLED:true}
+      tags:
+      - christmas-tree
+      - controller
+      retry-count: 5
+      fail-fast: true
+    defaultZone: "${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}"
+tracing:
+  zipkin:
+    enabled: ${ZIPKIN_ENABLED:true}
+    http:
+      url: http://${ZIPKIN_HOST:localhost}:${ZIPKIN_PORT:9411}
+      sampler:
+        probability: ${ZIPKIN_PROBABILITY:1}
+endpoints:
+  all:
+    sensitive: false

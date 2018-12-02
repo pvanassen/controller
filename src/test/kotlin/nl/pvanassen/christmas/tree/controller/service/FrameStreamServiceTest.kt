@@ -3,24 +3,27 @@ package nl.pvanassen.christmas.tree.controller.service
 import assertk.assert
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.mock
+import fr.bmartel.opc.OpcClient
 import fr.bmartel.opc.PixelStrip
+import nl.pvanassen.christmas.tree.animation.common.model.TreeModel
 import nl.pvanassen.christmas.tree.canvas.Canvas
+import nl.pvanassen.christmas.tree.controller.model.StripsModel
 import org.junit.jupiter.api.Test
 import java.awt.Color
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
-internal class ByteStreamServiceTest {
+internal class FrameStreamServiceTest {
 
     @Test
     fun when_mask_loaded_expect_pixels_to_be_of_color_red() {
-        val pixelStrips = mockPixelStripArray(16)
-        val sut = ByteStreamService(60, pixelStrips)
+        val pixelStrips = StripsModel(mockPixelStripArray(16), OpcClient("", 0))
+        val sut = FrameStreamService(TreeModel(16, 60), pixelStrips)
         val canvas = Canvas(16, 60)
         val mask: BufferedImage = ImageIO.read(Canvas::class.java.getResourceAsStream("/test-mask2-16-60.png"))
         canvas.canvas.graphics.drawImage(mask, 0, 0, null)
         val byteArray = canvas.getValues()
-        sut.pushByteStream(byteArray)
+        sut.pushFrame(byteArray)
     }
 
     private fun mockPixelStripArray(strips:Int):Array<PixelStrip> {
