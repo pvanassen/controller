@@ -11,7 +11,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 @Context
 class AnimationLoadTimer(private val byteArrayStoreService: ByteArrayStoreService,
                          private val remoteAnimationService: RemoteAnimationService,
-                         @Property(name = "christmas.tree.fps") private val fps:Int) {
+                         @Property(name = "christmas.tree.fps") private val fps:Int,
+                         @Property(name = "christmas.tree.seconds") private val seconds:Int) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -29,9 +30,10 @@ class AnimationLoadTimer(private val byteArrayStoreService: ByteArrayStoreServic
         }
         logger.info("Byte buffer needs animation!")
         loading.set(true)
-        remoteAnimationService.getFramesFromRandomAnimation(15, fps) {
+        remoteAnimationService.getFramesFromRandomAnimation(seconds, fps) {
             processByteArray(it)
         }
+
     }
 
     private fun processByteArray(byteArray: ByteArray) {

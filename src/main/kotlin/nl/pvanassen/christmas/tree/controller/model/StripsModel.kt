@@ -1,35 +1,34 @@
 package nl.pvanassen.christmas.tree.controller.model
 
-import fr.bmartel.opc.OpcClient
-import fr.bmartel.opc.PixelStrip
+import nl.pvanassen.opc.Opc
 import org.slf4j.LoggerFactory
 
-class StripsModel(private val strips:Array<PixelStrip>, private val opcClient: OpcClient) {
+class StripsModel(private val empty:Boolean, private val opc: Opc) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     init {
-        opcClient.clear()
+        opc.clear()
     }
 
     fun push() {
-        opcClient.show()
+        opc.flush()
     }
+
+    fun isEmpty() = empty
 
     fun setPixelColor(strip:Int, pixel:Int, color:Int) {
-        strips[strip].setPixelColor(pixel, color)
+        opc.setPixelColor(strip, pixel, color)
     }
-
-    fun isEmpty() = strips.isEmpty()
 
     fun setBrightness(brightness:Float) {
         logger.info("Setting brightness to $brightness")
 
         if (brightness >= 0.8) {
-            opcClient.setDithering(true)
+            opc.setDithering(true)
         } else {
-            opcClient.setDithering(false)
+            opc.setDithering(false)
         }
-        opcClient.setColorCorrection(2.4f, brightness, brightness, brightness)
+        opc.setColorCorrection(2.4f, brightness, brightness, brightness)
     }
 }

@@ -15,7 +15,7 @@
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exec.mainClass>nl.pvanassen.christmas.tree.controller.Application</exec.mainClass>
-        <kotlinVersion>1.2.61</kotlinVersion>
+        <kotlinVersion>1.3.11</kotlinVersion>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
     </properties>
     <repositories>
@@ -41,7 +41,19 @@
         <dependency>
             <groupId>nl.pvanassen.christmas.tree</groupId>
             <artifactId>christmas-tree-animation-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>nl.pvanassen.christmas.tree</groupId>
+            <artifactId>christmas-tree-canvas</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>nl.pvanassen.christmas.tree</groupId>
+            <artifactId>opc</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -115,11 +127,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>fr.bmartel</groupId>
-            <artifactId>opc</artifactId>
-            <version>1.08</version>
-        </dependency>
-        <dependency>
             <groupId>com.oracle.substratevm</groupId>
             <artifactId>svm</artifactId>
             <scope>provided</scope>
@@ -186,11 +193,6 @@
             <groupId>com.willowtreeapps.assertk</groupId>
             <artifactId>assertk-jvm</artifactId>
             <version>0.12</version>
-        </dependency>
-        <dependency>
-            <groupId>nl.pvanassen.christmas.tree</groupId>
-            <artifactId>christmas-tree-canvas</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.nhaarman</groupId>

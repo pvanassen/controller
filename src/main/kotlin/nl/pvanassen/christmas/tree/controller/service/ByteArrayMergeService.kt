@@ -12,16 +12,17 @@ class ByteArrayMergeService(private val frameService:ByteArrayFrameService,
         if (first.isEmpty()) {
             return second
         }
+        if (second.isEmpty()) {
+            return first
+        }
 
         val framesToMerge = framesToMerge(transitionMs)
 
         val resultArray = LinkedList<ByteArray>()
-        resultArray.addAll(first.subList(0, first.size - (framesToMerge / 2)))
-
-        val reversedFirst = first.reversed()
+        resultArray.addAll(first.subList(0, first.size - framesToMerge))
 
         (0 until framesToMerge).forEach { frameToMerge ->
-            val firstFrame = reversedFirst[frameToMerge]
+            val firstFrame = first[first.size - framesToMerge + frameToMerge]
             val secondFrame = second[frameToMerge]
             val factor = frameToMerge / (framesToMerge - 1).toDouble()
             val mergedFrame = (0 until frameService.getPixelsPerFrame()).flatMap { pixelToMerge ->
@@ -31,14 +32,13 @@ class ByteArrayMergeService(private val frameService:ByteArrayFrameService,
             }.toByteArray()
             resultArray.add(mergedFrame)
         }
-        resultArray.addAll(second.subList(framesToMerge / 2, second.size))
+        resultArray.addAll(second.subList(framesToMerge, second.size))
 
         return resultArray
     }
 
     private fun framesToMerge(milliseconds:Int): Int {
         val seconds = milliseconds.toDouble() / 1000f
-        // 3 bytes per frame, 60 frames per second times second
         return Math.ceil(seconds * fps).toInt()
     }
 
@@ -50,8 +50,8 @@ class ByteArrayMergeService(private val frameService:ByteArrayFrameService,
     }
 
     private fun transition(first:Byte, second:Byte, factor: Double): Byte {
-        val firstResult = Math.floor((first.toInt() and 0xFF) * factor)
-        val secondResult = Math.floor((second.toInt() and 0xFF) * (1-factor))
+        val firstResult = Math.floor((first.toInt() and 0xFF) * (1-factor))
+        val secondResult = Math.floor((second.toInt() and 0xFF) * factor)
         return Math.min(255.toDouble(), firstResult + secondResult).toByte()
     }
 }

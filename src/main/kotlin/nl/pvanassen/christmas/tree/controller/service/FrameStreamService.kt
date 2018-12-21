@@ -25,10 +25,11 @@ class FrameStreamService(private val treeModel: TreeModel,
     }
 
     private fun setPixelColor(arrayPos:Int, color:Int) {
-        val pixelStrip = (arrayPos / 3) / treeModel.ledsPerStrip
-        val pixel = (arrayPos / 3) % treeModel.ledsPerStrip
+        val pixelStrip = arrayPos / treeModel.ledsPerStrip
+        val offset = treeModel.ledsPerStrip * pixelStrip
+        // Reverse pixels
+        val pixel = treeModel.ledsPerStrip - (arrayPos - offset) - 1
         pixelStrips.setPixelColor(pixelStrip, pixel, color)
     }
-
 
 }

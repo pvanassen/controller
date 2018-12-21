@@ -1,6 +1,7 @@
 package nl.pvanassen.christmas.tree.controller.service
 
 import io.micronaut.context.annotation.Context
+import io.micronaut.context.annotation.Property
 import io.micronaut.scheduling.annotation.Scheduled
 import io.reactivex.schedulers.Schedulers
 import nl.pvanassen.christmas.tree.controller.client.RemoteAnimationClient
@@ -12,7 +13,8 @@ import kotlin.concurrent.withLock
 
 @Context
 class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationClient,
-                             private val consulChristmasTreeService: ConsulChristmasTreeService) {
+                             private val consulChristmasTreeService: ConsulChristmasTreeService,
+                             @Property(name = "app.debug") private val debug:Boolean) {
 
     private val lock = ReentrantLock()
 
@@ -22,13 +24,24 @@ class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationC
 
     private val random = Random()
 
+    private var lastAnimation = "First!"
+
     @Scheduled(fixedRate = "1m")
     @PostConstruct
     fun discoverAnimations() {
+        val stage = if (debug) {
+            "debug"
+        }
+        else {
+            "production"
+        }
+
         val services = consulChristmasTreeService.getChristmasTreeServices()
                 .filter { it.first.contains("animation") }
-                .map { it -> Pair(it.first.filter { it != "christmas-tree" }, it.second) }
-                .map { it -> Pair(it.first.filter { it != "animation" }, it.second) }
+                .filter { it.first.contains(stage)}
+                .map { Pair(it.first.filter { value -> value != "christmas-tree" }, it.second) }
+                .map { Pair(it.first.filter { value -> value != "animation" }, it.second) }
+                .map { Pair(it.first.filter { value -> value != stage }, it.second) }
 
         val normalAnimations = services
                 .filter { it.first.size == 1 }
@@ -37,15 +50,25 @@ class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationC
 
         lock.withLock {
             normalAnimationNameUrl.clear()
-            normalAnimationNameUrl.putAll(normalAnimations)
+            if (debug) {
+                normalAnimationNameUrl["local-debug"] = "http://localhost:8081"
+            }
+            else {
+                normalAnimationNameUrl.putAll(normalAnimations)
+            }
         }
     }
 
     fun getFramesFromRandomAnimation(seconds:Int, fps:Int, callback: (ByteArray) -> Unit) {
         // [random.nextInt(normalAnimationClients.size)]
         val animationName = normalAnimationNameUrl.keys.toList()[random.nextInt(normalAnimationNameUrl.size)]
+        lastAnimation = animationName
         logger.info("Using $animationName")
         remoteAnimationClient.getAnimation(normalAnimationNameUrl[animationName]!!, seconds, fps)
+                .onErrorReturn {
+                    logger.error("Error while fetching $animationName", it)
+                    ByteArray(0)
+                }
                 .map { callback(it) }
                 .subscribeOn(Schedulers.io())
                 .subscribe()

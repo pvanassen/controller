@@ -5,8 +5,9 @@ micronaut:
 christmas:
   tree:
     strips: ${LED_STRIPS:16}
-    leds-per-strip: ${LEDS_PER_STRIP:60}
-    fps: ${FPS:60}
+    leds-per-strip: ${LEDS_PER_STRIP:20}
+    fps: ${FPS:30}
+    seconds: ${SECONDS:10}
     opc:
       hostname: ${OPC_HOSTNAME:localhost}
       port: ${OPC_PORT:7890}
@@ -30,3 +31,5 @@ tracing:
 endpoints:
   all:
     sensitive: false
+app:
+  debug: ${DEBUG:false}
