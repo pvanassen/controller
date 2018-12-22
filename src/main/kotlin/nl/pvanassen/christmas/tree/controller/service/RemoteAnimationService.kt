@@ -36,12 +36,19 @@ class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationC
             "production"
         }
 
-        val services = consulChristmasTreeService.getChristmasTreeServices()
-                .filter { it.first.contains("animation") }
-                .filter { it.first.contains(stage)}
-                .map { Pair(it.first.filter { value -> value != "christmas-tree" }, it.second) }
-                .map { Pair(it.first.filter { value -> value != "animation" }, it.second) }
-                .map { Pair(it.first.filter { value -> value != stage }, it.second) }
+        val services =
+                try {
+                    consulChristmasTreeService.getChristmasTreeServices()
+                            .filter { it.first.contains("animation") }
+                            .filter { it.first.contains(stage) }
+                            .map { Pair(it.first.filter { value -> value != "christmas-tree" }, it.second) }
+                            .map { Pair(it.first.filter { value -> value != "animation" }, it.second) }
+                            .map { Pair(it.first.filter { value -> value != stage }, it.second) }
+                }
+                catch (e: Exception) {
+                    logger.error("Cannot connect to Consul", e)
+                    LinkedList<Pair<List<String?>, String>>()
+                }
 
         val normalAnimations = services
                 .filter { it.first.size == 1 }

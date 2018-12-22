@@ -34,6 +34,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>com.oracle.substratevm</groupId>
+                <artifactId>svm</artifactId>
+                <version>1.0.0-rc10</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -41,7 +46,7 @@
         <dependency>
             <groupId>nl.pvanassen.christmas.tree</groupId>
             <artifactId>christmas-tree-animation-common</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

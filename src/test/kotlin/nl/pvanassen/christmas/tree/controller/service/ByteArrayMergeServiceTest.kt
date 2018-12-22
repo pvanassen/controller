@@ -31,10 +31,10 @@ internal class ByteArrayMergeServiceTest {
         // ms -> s = / 1000, 3 pixels per strip
         val extraFrames = (ms / 1000) * fps
 
-        assertEquals(result.size, first.size + second.size + extraFrames)
+        assertEquals(result.size, first.size + second.size - 120)
 
         val r2 = sut.mergeByteArrays(result, first, ms)
-        assertEquals(r2.size, result.size + second.size + extraFrames)
+        assertEquals(r2.size, result.size + second.size - 120)
     }
 
     private fun buildArray(color: Color, strips:Int, ledsPerStrip:Int, length:Int): List<ByteArray> {

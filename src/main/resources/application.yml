@@ -7,7 +7,7 @@ christmas:
     strips: ${LED_STRIPS:16}
     leds-per-strip: ${LEDS_PER_STRIP:20}
     fps: ${FPS:30}
-    seconds: ${SECONDS:10}
+    seconds: ${SECONDS:25}
     opc:
       hostname: ${OPC_HOSTNAME:localhost}
       port: ${OPC_PORT:7890}

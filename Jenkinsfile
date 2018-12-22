@@ -38,6 +38,7 @@ pipeline {
             }
         }
 
+
         stage ('Deploy snapshot') {
             when {
                 not {
@@ -47,13 +48,16 @@ pipeline {
             parallel {
                 stage ('Deploy snapshot') {
                     steps {
-                        sh 'mvn deploy -DaltDeploymentRepository=snapshots-paul::http://nexus3.int.paules.nl/repository/snapshots/'
+                        sh "mvn deploy -DaltDeploymentRepository=$SNAPSHOT_REPOSITORY"
                     }
                 }
                 stage ('Docker snapshot') {
                     steps {
                         script {
-                            docker.build "christmas-tree-brightness:$BUILD_NUMBER"
+                            def pom = readMavenPom file: 'pom.xml'
+                            def name = pom.artifactId
+                            def image = docker.build "$DOCKER_REPO/$name:snapshot"
+                            image.push()
                         }
                     }
                 }
@@ -66,13 +70,16 @@ pipeline {
             parallel {
                 stage ('Deploy release') {
                     steps {
-                        sh 'mvn deploy -Psonatype-oss-release'
+                        sh "mvn deploy -DaltDeploymentRepository=$RELEASE_REPOSITORY"
                     }
                 }
-                stage ('Docker snapshot') {
+                stage ('Docker latest') {
                     steps {
                         script {
-                            docker.build "christmas-tree-brightness:latest"
+                            def pom = readMavenPom file: 'pom.xml'
+                            def name = pom.artifactId
+                            def image = docker.build "$DOCKER_REPO/$name:latest"
+                            image.push()
                         }
                     }
                 }
