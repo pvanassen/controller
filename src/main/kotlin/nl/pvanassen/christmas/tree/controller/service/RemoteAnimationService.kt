@@ -67,8 +67,10 @@ class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationC
         remoteAnimationClient.getAnimation(normalAnimationNameUrl[animationName]!!, seconds, fps)
                 .onErrorReturn {
                     logger.error("Error while fetching $animationName", it)
+                    discoverAnimations()
                     ByteArray(0)
                 }
+                .retry(3)
                 .map { callback(it) }
                 .subscribeOn(Schedulers.io())
                 .subscribe()
