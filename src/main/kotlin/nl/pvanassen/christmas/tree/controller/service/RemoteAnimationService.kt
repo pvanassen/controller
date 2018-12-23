@@ -35,6 +35,7 @@ class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationC
         else {
             "production"
         }
+        logger.info("Refreshing animations")
 
         val services =
                 try {
