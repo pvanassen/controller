@@ -23,6 +23,7 @@ class BrightnessTimer(private val stripsModel: StripsModel,
                 .firstOrNull()
         if (brightnessServer == null) {
             logger.error("Brightness server not found")
+            return
         }
         brightnessClient.getBrightness(brightnessServer!!)
                 .map { stripsModel.setBrightness(it) }
