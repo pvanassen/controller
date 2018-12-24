@@ -21,7 +21,9 @@ abstract class CustomConsulClient(p0: BeanContext?, p1: Array<out Interceptor<An
     override fun getHealthyServices(p0: String?, p1: Boolean?, p2: String?, p3: String?): Publisher<*> {
         return Flowable.fromPublisher(super.getHealthyServices(p0, p1, p2, p3))
                 .onErrorReturn {
-                    logger.info("Got an error on $p0")
+                    if (!p0!!.contains("christmas-tree")) {
+                        logger.info("Got an error on $p0")
+                    }
                     emptyList<HealthEntry>()
                 }
     }
