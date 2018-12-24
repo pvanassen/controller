@@ -11,6 +11,9 @@ christmas:
     opc:
       hostname: ${OPC_HOSTNAME:localhost}
       port: ${OPC_PORT:7890}
+espurna:
+  host: ${ESPURNA_HOST:localhost}
+  apiKey: ${EsPURNA_APIKEY:12345678}
 consul:
   client:
     registration:
