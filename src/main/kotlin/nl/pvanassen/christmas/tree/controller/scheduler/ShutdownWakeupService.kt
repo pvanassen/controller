@@ -2,25 +2,28 @@ package nl.pvanassen.christmas.tree.controller.scheduler
 
 import io.micronaut.context.annotation.Context
 import io.micronaut.scheduling.annotation.Scheduled
-import nl.pvanassen.christmas.tree.controller.client.EspurnaClient
+import io.reactivex.schedulers.Schedulers
 import nl.pvanassen.christmas.tree.controller.model.TreeState
+import nl.pvanassen.christmas.tree.controller.service.EspurnaService
 import org.slf4j.LoggerFactory
 
 @Context
-class ShutdownWakeupService(private val espurnaClient: EspurnaClient,
+class ShutdownWakeupService(private val espurnaService: EspurnaService,
                             private val animationLoader: AnimationLoader) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     init {
-        espurnaClient.switchOn()
+        espurnaService.switchOn()
     }
 
     @Scheduled(cron = "0 55 6 * * *")
     fun wakePower() {
         logger.info("Waking up!")
         TreeState.state = TreeState.State.STARTING_UP
-        espurnaClient.switchOn()
+        espurnaService.switchOn()
+                .subscribeOn(Schedulers.io())
+                .subscribe()
     }
 
     @Scheduled(cron = "0 0 7 * * *")
@@ -49,7 +52,9 @@ class ShutdownWakeupService(private val espurnaClient: EspurnaClient,
     fun shutdown() {
         logger.info("Shutdown. ")
         TreeState.state = TreeState.State.OFF
-        espurnaClient.switchOff()
+        espurnaService.switchOff()
+                .subscribeOn(Schedulers.io())
+                .subscribe()
     }
 
 }
