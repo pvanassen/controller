@@ -4,6 +4,7 @@ import io.micronaut.scheduling.annotation.Scheduled
 import io.reactivex.schedulers.Schedulers
 import nl.pvanassen.christmas.tree.controller.client.BrightnessClient
 import nl.pvanassen.christmas.tree.controller.model.StripsModel
+import nl.pvanassen.christmas.tree.controller.model.TreeState
 import nl.pvanassen.christmas.tree.controller.service.ConsulChristmasTreeService
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
@@ -23,6 +24,9 @@ class BrightnessTimer(private val stripsModel: StripsModel,
                 .firstOrNull()
         if (brightnessServer == null) {
             logger.error("Brightness server not found")
+            return
+        }
+        if (TreeState.state != TreeState.State.ON) {
             return
         }
         brightnessClient.getBrightness(brightnessServer)

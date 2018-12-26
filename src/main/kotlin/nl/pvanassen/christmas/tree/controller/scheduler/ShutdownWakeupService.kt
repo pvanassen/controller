@@ -16,27 +16,36 @@ class ShutdownWakeupService(private val espurnaClient: EspurnaClient,
         espurnaClient.switchOn()
     }
 
-    @Scheduled(cron = "* 55 6 * * *")
+    @Scheduled(cron = "0 55 6 * * *")
     fun wakePower() {
         logger.info("Waking up!")
         TreeState.state = TreeState.State.STARTING_UP
         espurnaClient.switchOn()
     }
 
-    @Scheduled(cron = "* 0 7 * * *")
+    @Scheduled(cron = "0 0 7 * * *")
     fun startup() {
         logger.info("Starting up")
+        TreeState.state = TreeState.State.STARTING_UP
         animationLoader.loadSunrise()
     }
 
-    @Scheduled(cron = "* 0 23 * * *")
+    @Scheduled(cron = "0 5 7 * * *")
+    fun forceOn() {
+        if (TreeState.state != TreeState.State.ON) {
+            logger.info("Current state: ${TreeState.state}, forcing on")
+            TreeState.state = TreeState.State.ON
+        }
+    }
+
+    @Scheduled(cron = "0 0 23 * * *")
     fun shuttingDown() {
         logger.info("Shutting down!")
         animationLoader.loadSunset()
         TreeState.state = TreeState.State.SHUTTING_DOWN
     }
 
-    @Scheduled(cron = "* 5 23 * * *")
+    @Scheduled(cron = "0 5 23 * * *")
     fun shutdown() {
         logger.info("Shutdown. ")
         TreeState.state = TreeState.State.OFF
