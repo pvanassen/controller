@@ -2,7 +2,7 @@ package nl.pvanassen.christmas.tree.controller.controller
 
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
 import io.reactivex.Single
 import nl.pvanassen.christmas.tree.controller.scheduler.ShutdownWakeupService
 import org.slf4j.LoggerFactory
@@ -13,7 +13,7 @@ class StateController(private val shutdownWakeupService: ShutdownWakeupService) 
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
-    @Get("/shutdown")
+    @Post("/shutdown")
     fun shutdown(): HttpStatus {
         return Single.just(0)
                 .map { shutdownWakeupService.shuttingDown() }
@@ -27,13 +27,13 @@ class StateController(private val shutdownWakeupService: ShutdownWakeupService) 
                 .blockingGet()
     }
 
-    @Get("/shutdown-now")
+    @Post("/shutdown-now")
     fun shutdownNow():Single<String> {
         shutdownWakeupService.shutdown()
         return Single.just("ok")
     }
 
-    @Get("/startup")
+    @Post("/startup")
     fun startup(): HttpStatus {
         return Single.just(0)
                 .map { shutdownWakeupService.wakePower() }

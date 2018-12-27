@@ -1,0 +1,6 @@
+logs/*
+!.gitkeep
+node_modules/
+app/lib/
+tmp
+package-lock.json

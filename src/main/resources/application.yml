@@ -1,7 +1,12 @@
 micronaut:
   application:
     name: christmas-tree-controller
-
+  router:
+    static-resources:
+      webapp:
+        enabled: true
+        paths: classpath:webapp/app
+        mapping: /**
 christmas:
   tree:
     strips: ${LED_STRIPS:16}
