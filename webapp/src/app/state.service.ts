@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {catchError, map, reduce} from "rxjs/operators";
+import {catchError, reduce} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +40,9 @@ export class StateService {
 
   fireworks():Observable<any> {
     return this.http.post("/api/state/fireworks", "")
+  }
+
+  forceOn():Observable<any> {
+    return this.http.post("/api/state/force-on", "")
   }
 }

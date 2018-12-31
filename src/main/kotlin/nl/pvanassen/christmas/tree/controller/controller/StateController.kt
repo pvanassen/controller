@@ -8,11 +8,13 @@ import io.micronaut.http.annotation.Post
 import io.reactivex.Single
 import nl.pvanassen.christmas.tree.controller.model.TreeState
 import nl.pvanassen.christmas.tree.controller.scheduler.ShutdownWakeupService
+import nl.pvanassen.christmas.tree.controller.service.ByteArrayStoreService
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
 @Controller("/api/state", consumes = [MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN], produces = [MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN])
-class StateController(private val shutdownWakeupService: ShutdownWakeupService) {
+class StateController(private val shutdownWakeupService: ShutdownWakeupService,
+                      private val byteArrayStoreService: ByteArrayStoreService) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -52,6 +54,14 @@ class StateController(private val shutdownWakeupService: ShutdownWakeupService) 
         return Single.just(0)
                 .map { shutdownWakeupService.fireworks() }
                 .map { HttpStatus.OK }
+    }
+
+    @Post("/force-on")
+    fun forceOn(): Single<HttpStatus> {
+        return Single.just(0)
+                .map { TreeState.state = TreeState.State.ON }
+                .map { byteArrayStoreService.reset() }
+                .map {HttpStatus.OK}
     }
 
     @Get

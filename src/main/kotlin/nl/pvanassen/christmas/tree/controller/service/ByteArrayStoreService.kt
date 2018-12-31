@@ -48,4 +48,10 @@ class ByteArrayStoreService(treeModel: TreeModel,
     fun needsFrames() = frameList.size < (fps * 30)
 
     fun hasFrames() = !frameList.isEmpty()
+
+    fun reset() {
+        lock.withLock {
+            frameList.clear()
+        }
+    }
 }
