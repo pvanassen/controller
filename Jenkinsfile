@@ -17,7 +17,7 @@ pipeline {
 
         stage ('Compile') {
             steps {
-                sh 'mvn -B clean package -Dmaven.test.skip=true'
+                sh 'mvn -B clean package -Dmaven.test.skip=true -Dbuild=production'
             }
             post {
                 always {
@@ -48,7 +48,7 @@ pipeline {
             parallel {
                 stage ('Deploy snapshot') {
                     steps {
-                        sh "mvn deploy -DaltDeploymentRepository=$SNAPSHOT_REPOSITORY"
+                        sh "mvn deploy -DaltDeploymentRepository=$SNAPSHOT_REPOSITORY -Dbuild=production"
                     }
                 }
                 stage ('Docker snapshot') {
@@ -70,7 +70,7 @@ pipeline {
             parallel {
                 stage ('Deploy release') {
                     steps {
-                        sh "mvn deploy -DaltDeploymentRepository=$RELEASE_REPOSITORY"
+                        sh "mvn deploy -DaltDeploymentRepository=$RELEASE_REPOSITORY -Dbuild=production"
                     }
                 }
                 stage ('Docker latest') {
