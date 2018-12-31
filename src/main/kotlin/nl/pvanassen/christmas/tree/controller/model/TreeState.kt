@@ -5,6 +5,6 @@ object TreeState {
     var state:State = State.STARTING_UP
 
     enum class State {
-        ON, OFF, STARTING_UP, SHUTTING_DOWN
+        ON, OFF, STARTING_UP, SHUTTING_DOWN, FIREWORK
     }
 }

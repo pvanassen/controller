@@ -95,6 +95,15 @@ class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationC
                 .subscribe()
     }
 
+    fun getFramesFromFireworks(fps:Int, callback: (ByteArray) -> Unit) {
+        if (debug) {
+            getSpecialAnimation("local-debug", fps, callback)
+        }
+        else {
+            getSpecialAnimation("fireworks", fps, callback)
+        }
+    }
+
     fun getSunriseAnimation(fps:Int, callback: (ByteArray) -> Unit) {
         if (debug) {
             getSpecialAnimation("local-debug", fps, callback)
@@ -103,7 +112,6 @@ class RemoteAnimationService(private val remoteAnimationClient: RemoteAnimationC
             getSpecialAnimation("sunrise", fps, callback)
         }
     }
-
 
     fun getSunsetAnimation(fps:Int, callback: (ByteArray) -> Unit) {
         if (debug) {

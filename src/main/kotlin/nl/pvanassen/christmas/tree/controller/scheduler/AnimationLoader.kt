@@ -39,12 +39,12 @@ class AnimationLoader(private val byteArrayStoreService: ByteArrayStoreService,
         }
     }
 
-    @Scheduled(fixedRate = "5s")
+    @Scheduled(fixedRate = "1s")
     fun checkBufferStatus() {
         if (!byteArrayStoreService.needsFrames()) {
             return
         }
-        if (TreeState.state != TreeState.State.ON) {
+        if (!(TreeState.state == TreeState.State.ON || TreeState.state == TreeState.State.FIREWORK)) {
             return
         }
         if (loading.get()) {
@@ -52,8 +52,15 @@ class AnimationLoader(private val byteArrayStoreService: ByteArrayStoreService,
             return
         }
         loading.set(true)
-        remoteAnimationService.getFramesFromRandomAnimation(seconds, fps) {
-            processByteArray(it)
+        if (TreeState.state == TreeState.State.ON) {
+            remoteAnimationService.getFramesFromRandomAnimation(seconds, fps) {
+                processByteArray(it)
+            }
+        }
+        else {
+            remoteAnimationService.getFramesFromFireworks(fps) {
+                processByteArray(it)
+            }
         }
 
     }

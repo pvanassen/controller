@@ -5,7 +5,7 @@ micronaut:
     static-resources:
       webapp:
         enabled: true
-        paths: classpath:webapp/app
+        paths: classpath:webapp
         mapping: /**
 christmas:
   tree:

@@ -6,6 +6,8 @@ import io.reactivex.schedulers.Schedulers
 import nl.pvanassen.christmas.tree.controller.model.TreeState
 import nl.pvanassen.christmas.tree.controller.service.EspurnaService
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
+import java.time.Month
 
 @Context
 class ShutdownWakeupService(private val espurnaService: EspurnaService,
@@ -50,6 +52,10 @@ class ShutdownWakeupService(private val espurnaService: EspurnaService,
 
     @Scheduled(cron = "0 5 23 * * *")
     fun shutdown() {
+        if (LocalDate.now().month == Month.DECEMBER && LocalDate.now().dayOfMonth == 31) {
+            logger.info("No shutdown, fireworks!")
+            return
+        }
         logger.info("Shutdown. ")
         TreeState.state = TreeState.State.OFF
         espurnaService.switchOff()
@@ -57,4 +63,9 @@ class ShutdownWakeupService(private val espurnaService: EspurnaService,
                 .subscribe()
     }
 
+    @Scheduled(cron = "0 59 23 31 12 *")
+    fun fireworks() {
+        TreeState.state = TreeState.State.FIREWORK
+        logger.info("Fireworks!")
+    }
 }

@@ -2,6 +2,7 @@ package nl.pvanassen.christmas.tree.controller.service
 
 import io.micronaut.context.annotation.Property
 import nl.pvanassen.christmas.tree.animation.common.model.TreeModel
+import nl.pvanassen.christmas.tree.controller.model.TreeState
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Singleton
@@ -25,8 +26,14 @@ class ByteArrayStoreService(treeModel: TreeModel,
         val nextAnimation = (0 until frames.size / frameSize).map {
             frames.sliceArray(IntRange(it * frameSize, ((it + 1) * frameSize) - 1))
         }
+        val transition = if (TreeState.state == TreeState.State.FIREWORK) {
+            1000
+        }
+        else {
+            2000
+        }
         lock.withLock {
-            val mergedResult = byteArrayMergeService.mergeByteArrays(frameList, nextAnimation, 2000)
+            val mergedResult = byteArrayMergeService.mergeByteArrays(frameList, nextAnimation, transition)
             frameList.clear()
             frameList.addAll(mergedResult)
         }

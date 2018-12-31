@@ -1,6 +1,7 @@
 package nl.pvanassen.christmas.tree.controller.scheduler
 
 import io.micronaut.scheduling.annotation.Scheduled
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import nl.pvanassen.christmas.tree.controller.client.BrightnessClient
 import nl.pvanassen.christmas.tree.controller.model.BrightnessState
@@ -22,20 +23,26 @@ class BrightnessService(private val stripsModel: StripsModel,
         if (BrightnessState.state != BrightnessState.State.AUTO) {
             return
         }
-        if (TreeState.state != TreeState.State.ON) {
-            return
+        if (TreeState.state == TreeState.State.ON) {
+            getBrightness()
+                    .map { stripsModel.setBrightness(it) }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
         }
+        else if (TreeState.state == TreeState.State.FIREWORK) {
+            stripsModel.setBrightness(.8f)
+        }
+    }
+
+    fun getBrightness(): Single<Float> {
         val brightnessServer = consulChristmasTreeService.getChristmasTreeServices()
                 .filter { it.first.contains("brightness") }
                 .map { it.second }
                 .firstOrNull()
         if (brightnessServer == null) {
             logger.error("Brightness server not found")
-            return
+            return Single.error(RuntimeException("Server not found"))
         }
-        brightnessClient.getBrightness(brightnessServer)
-                .map { stripsModel.setBrightness(it) }
-                .subscribeOn(Schedulers.io())
-                .subscribe()
+        return brightnessClient.getBrightness(brightnessServer)
     }
 }
