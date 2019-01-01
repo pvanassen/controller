@@ -6,7 +6,6 @@ import io.reactivex.schedulers.Schedulers
 import nl.pvanassen.christmas.tree.controller.client.BrightnessClient
 import nl.pvanassen.christmas.tree.controller.model.BrightnessState
 import nl.pvanassen.christmas.tree.controller.model.StripsModel
-import nl.pvanassen.christmas.tree.controller.model.TreeState
 import nl.pvanassen.christmas.tree.controller.service.ConsulChristmasTreeService
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
@@ -23,15 +22,10 @@ class BrightnessService(private val stripsModel: StripsModel,
         if (BrightnessState.state != BrightnessState.State.AUTO) {
             return
         }
-        if (TreeState.state == TreeState.State.ON) {
-            getBrightness()
-                    .map { stripsModel.setBrightness(it) }
-                    .subscribeOn(Schedulers.io())
-                    .subscribe()
-        }
-        else if (TreeState.state == TreeState.State.FIREWORK) {
-            stripsModel.setBrightness(.8f)
-        }
+        getBrightness()
+                .map { stripsModel.setBrightness(it) }
+                .subscribeOn(Schedulers.io())
+                .subscribe()
     }
 
     fun getBrightness(): Single<Float> {
