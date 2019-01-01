@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>nl.pvanassen.christmas.tree</groupId>
     <artifactId>christmas-tree-controller</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.1</version>
     <parent>
         <groupId>nl.pvanassen</groupId>
         <artifactId>parent</artifactId>
