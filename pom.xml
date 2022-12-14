@@ -2,22 +2,57 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>nl.pvanassen.christmas.tree</groupId>
-    <artifactId>christmas-tree-controller</artifactId>
-    <version>1.5.2-SNAPSHOT</version>
-    <parent>
-        <groupId>nl.pvanassen</groupId>
-        <artifactId>parent</artifactId>
-        <version>2.0.0</version>
-    </parent>
+    <groupId>nl.pvanassen.led</groupId>
+    <artifactId>led-controller</artifactId>
+    <version>1.6.0-SNAPSHOT</version>
     <properties>
-        <micronaut.version>1.0.1</micronaut.version>
-        <jdk.version>1.8</jdk.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <exec.mainClass>nl.pvanassen.christmas.tree.controller.Application</exec.mainClass>
-        <kotlinVersion>1.3.11</kotlinVersion>
-        <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
+        <kotlin.version>1.7.22</kotlin.version>
+        <kotlin-coroutines.version>1.6.4</kotlin-coroutines.version>
+        <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
+
+        <junit.version>5.9.1</junit.version>
+        <assertj.version>3.23.1</assertj.version>
+        <logback.version>1.4.5</logback.version>
+        <slf4j.version>2.0.5</slf4j.version>
+        <ktor.version>2.2.1</ktor.version>
+
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+        <nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
+        <dokka-maven-plugin.version>1.7.20</dokka-maven-plugin.version>
     </properties>
+
+    <name>Common animation</name>
+    <description>Common animation for LEDs</description>
+    <url>https://github.com/pvanassen/controller</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/pvanassen/controller.git</connection>
+        <developerConnection>scm:git:https://github.com/pvanassen/controller.git</developerConnection>
+        <url>https://github.com/pvanassen/controller</url>
+    </scm>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <repositories>
         <repository>
             <id>jcenter.bintray.com</id>
@@ -25,263 +60,116 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <name>Paul van Assen</name>
+            <url>https://github.com/pvanassen</url>
+        </developer>
+    </developers>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.micronaut</groupId>
-                <artifactId>micronaut-bom</artifactId>
-                <version>${micronaut.version}</version>
-                <type>pom</type>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-bom</artifactId>
+                <version>${ktor.version}</version>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.oracle.substratevm</groupId>
-                <artifactId>svm</artifactId>
-                <version>1.0.0-rc10</version>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>nl.pvanassen.christmas.tree</groupId>
-            <artifactId>christmas-tree-animation-common</artifactId>
-            <version>1.1.0</version>
-            <scope>compile</scope>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-cio-jvm</artifactId>
         </dependency>
         <dependency>
-            <groupId>nl.pvanassen.christmas.tree</groupId>
-            <artifactId>christmas-tree-canvas</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>nl.pvanassen.christmas.tree</groupId>
-            <artifactId>opc</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-http-client</artifactId>
-            <scope>compile</scope>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-core-jvm</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-http-server-netty</artifactId>
-            <scope>compile</scope>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-cio-jvm</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-discovery-client</artifactId>
-            <scope>compile</scope>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-content-negotiation-jvm</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-management</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-tracing</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-instrumentation-http</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.zipkin.reporter2</groupId>
-            <artifactId>zipkin-reporter</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.opentracing.brave</groupId>
-            <artifactId>brave-opentracing</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jaegertracing</groupId>
-            <artifactId>jaeger-thrift</artifactId>
-            <version>0.31.0</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.ecwid.consul</groupId>
-            <artifactId>consul-api</artifactId>
-            <version>1.4.2</version>
-            <scope>compile</scope>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-config-yaml-jvm</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <version>${kotlinVersion}</version>
+            <version>${kotlin.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
-            <version>${kotlinVersion}</version>
+            <version>${kotlin.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-runtime</artifactId>
-            <scope>compile</scope>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>${kotlin-coroutines.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.oracle.substratevm</groupId>
-            <artifactId>svm</artifactId>
-            <scope>provided</scope>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-            <scope>runtime</scope>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-graal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.9.4.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.micronaut</groupId>
-            <artifactId>micronaut-inject-java</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.3</version>
-            <scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.spek</groupId>
-            <artifactId>spek-api</artifactId>
-            <version>1.1.5</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.1.0</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.spek</groupId>
-            <artifactId>spek-junit-platform-engine</artifactId>
-            <version>1.1.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.willowtreeapps.assertk</groupId>
-            <artifactId>assertk-jvm</artifactId>
-            <version>0.12</version>
-        </dependency>
-        <dependency>
-            <groupId>com.nhaarman</groupId>
-            <artifactId>mockito-kotlin</artifactId>
-            <version>1.6.0</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
     <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${exec.mainClass}</mainClass>
-                                </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <configuration>
-                    <executable>java</executable>
-                    <arguments>
-                        <argument>-noverify</argument>
-                        <argument>-XX:TieredStopAtLevel=1</argument>
-                        <argument>-classpath</argument>
-                        <classpath/>
-                        <argument>${exec.mainClass}</argument>
-                    </arguments>
-                </configuration>
-            </plugin>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <version>${kotlinVersion}</version>
-                <configuration>
-                    <compilerPlugins>
-                        <plugin>all-open</plugin>
-                    </compilerPlugins>
-                    <pluginOptions>
-                        <option>all-open:annotation=io.micronaut.aop.Around</option>
-                    </pluginOptions>
-                </configuration>
+                <version>${kotlin.version}</version>
                 <executions>
-                    <execution>
-                        <id>kapt</id>
-                        <goals>
-                            <goal>kapt</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>src/main/kotlin</sourceDir>
-                            </sourceDirs>
-                            <annotationProcessorPaths>
-                                <annotationProcessorPath>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-inject-java</artifactId>
-                                    <version>${micronaut.version}</version>
-                                </annotationProcessorPath>
-                                <annotationProcessorPath>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-validation</artifactId>
-                                    <version>${micronaut.version}</version>
-                                </annotationProcessorPath>
-                            </annotationProcessorPaths>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>compile</id>
                         <goals>
@@ -289,32 +177,8 @@
                         </goals>
                         <configuration>
                             <sourceDirs>
-                                <sourceDir>src/main/kotlin</sourceDir>
-                                <sourceDir>src/main/java</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                             </sourceDirs>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>test-kapt</id>
-                        <goals>
-                            <goal>test-kapt</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>src/test/kotlin</sourceDir>
-                            </sourceDirs>
-                            <annotationProcessorPaths>
-                                <annotationProcessorPath>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-inject-java</artifactId>
-                                    <version>${micronaut.version}</version>
-                                </annotationProcessorPath>
-                                <annotationProcessorPath>
-                                    <groupId>io.micronaut</groupId>
-                                    <artifactId>micronaut-validation</artifactId>
-                                    <version>${micronaut.version}</version>
-                                </annotationProcessorPath>
-                            </annotationProcessorPaths>
                         </configuration>
                     </execution>
                     <execution>
@@ -324,34 +188,32 @@
                         </goals>
                         <configuration>
                             <sourceDirs>
-                                <sourceDir>src/test/kotlin</sourceDir>
-                                <sourceDir>target/generated-sources/kapt/test</sourceDir>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jetbrains.kotlin</groupId>
-                        <artifactId>kotlin-maven-allopen</artifactId>
-                        <version>${kotlinVersion}</version>
-                    </dependency>
-                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <proc>none</proc>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
                 <executions>
+                    <!-- Replacing default-compile as it is treated specially by maven -->
                     <execution>
                         <id>default-compile</id>
                         <phase>none</phase>
                     </execution>
+                    <!-- Replacing default-testCompile as it is treated specially by maven -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>none</phase>
@@ -372,164 +234,68 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>${dokka-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>dokka</goal>
+                            <goal>javadoc</goal>
+                            <goal>javadocJar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>presite</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>dokka</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${nexus-staging-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>develop-build</id>
-            <activation>
-                <property>
-                    <name>!build</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>install node and npm</id>
-                                <goals>
-                                    <goal>install-node-and-npm</goal>
-                                </goals>
-                                <phase>generate-resources</phase>
-                            </execution>
-                            <execution>
-                                <id>npm install</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
 
-                                <phase>generate-resources</phase>
-
-                                <configuration>
-                                    <arguments>install</arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>build prod</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-
-                                <phase>generate-resources</phase>
-
-                                <configuration>
-                                    <arguments>run-script build</arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <nodeVersion>v10.10.0</nodeVersion>
-                            <npmVersion>6.4.1</npmVersion>
-                            <workingDirectory>webapp</workingDirectory>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.1.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-resources</id>
-                                <!-- here the phase you need -->
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.outputDirectory}/webapp</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>webapp/dist/treeapp/</directory>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>production-build</id>
-            <activation>
-                <property>
-                    <name>build</name>
-                    <value>production</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>install node and npm</id>
-                                <goals>
-                                    <goal>install-node-and-npm</goal>
-                                </goals>
-                                <phase>generate-resources</phase>
-                            </execution>
-                            <execution>
-                                <id>npm install</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-
-                                <phase>generate-resources</phase>
-
-                                <configuration>
-                                    <arguments>install</arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>build prod</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-
-                                <phase>generate-resources</phase>
-
-                                <configuration>
-                                    <arguments>run-script prod</arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <nodeVersion>v10.10.0</nodeVersion>
-                            <npmVersion>6.4.1</npmVersion>
-                            <workingDirectory>webapp</workingDirectory>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.1.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-resources</id>
-                                <!-- here the phase you need -->
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.outputDirectory}/webapp</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>webapp/dist/treeapp/</directory>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
 </project>

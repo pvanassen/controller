@@ -1,14 +1,9 @@
-micronaut:
-  application:
-    name: christmas-tree-controller
-  router:
-    static-resources:
-      webapp:
-        enabled: true
-        paths: classpath:webapp
-        mapping: /**
-christmas:
-  tree:
+app:
+  debug: ${DEBUG:false}
+  tasmota:
+    host: ${ESPURNA_HOST:localhost}
+    apiKey: ${EsPURNA_APIKEY:12345678}
+  leds:
     strips: ${LED_STRIPS:16}
     leds-per-strip: ${LEDS_PER_STRIP:20}
     fps: ${FPS:30}
@@ -16,28 +11,3 @@ christmas:
     opc:
       hostname: ${OPC_HOSTNAME:localhost}
       port: ${OPC_PORT:7890}
-espurna:
-  host: ${ESPURNA_HOST:localhost}
-  apiKey: ${EsPURNA_APIKEY:12345678}
-consul:
-  client:
-    registration:
-      enabled: ${CONSUL_ENABLED:true}
-      tags:
-      - christmas-tree
-      - controller
-      retry-count: 5
-      fail-fast: true
-    defaultZone: "${CONSUL_HOST:localhost}:${CONSUL_PORT:8500}"
-tracing:
-  zipkin:
-    enabled: ${ZIPKIN_ENABLED:true}
-    http:
-      url: http://${ZIPKIN_HOST:localhost}:${ZIPKIN_PORT:9411}
-      sampler:
-        probability: ${ZIPKIN_PROBABILITY:1}
-endpoints:
-  all:
-    sensitive: false
-app:
-  debug: ${DEBUG:false}
