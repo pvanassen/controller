@@ -1,26 +1,24 @@
 package nl.pvanassen.led
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
-import io.ktor.server.config.yaml.*
 import io.ktor.server.engine.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import nl.pvanassen.christmas.tree.controller.model.BrightnessState
-import nl.pvanassen.opc.Opc
+import nl.pvanassen.led.brightness.BrightnessState
 import java.time.Duration
 import io.ktor.serialization.kotlinx.*
+import io.ktor.server.http.content.*
+import io.ktor.server.response.*
 import kotlinx.serialization.json.*
-import nl.pvanassen.led.animation.AnimationWebsocketEndpoint
-import nl.pvanassen.led.brightness.BrightnessEndpoint
+import nl.pvanassen.led.model.TreeState
+import java.io.File
+import java.io.OutputStream
 
-private val config = YamlConfig(null)!!
-private val opc = buildOpc(config)
-
-fun main(args: Array<String>) {
+fun main() {
     embeddedServer(CIO, port = 8080, module = Application::module).start(wait = true)
 }
-
 
 fun Application.module() {
     configureRouting()
@@ -28,22 +26,50 @@ fun Application.module() {
 }
 
 fun Application.configureRouting() {
-    val brightnessEndpoint = BrightnessEndpoint(config, opc)
+    val brightnessService = Context.brightnessService
+    val stateEndpoint = Context.stateEndpoint
 
     routing {
         get("/api/brightness") {
-            brightnessEndpoint.getBrightness()
+            brightnessService.getBrightnessState()
         }
         post("/api/brightness/{state}") {
             call.parameters["state"]?.let {
-                brightnessEndpoint.setBrightness(BrightnessState.State.valueOf(it.uppercase()))
+                brightnessService.updateBrightnessState(BrightnessState.State.valueOf(it.uppercase()))
             }
+        }
+        post("/api/state/shutdown") {
+            stateEndpoint.shutdown()
+        }
+        post("/api/state/shutdown-now") {
+            stateEndpoint.shutdownNow()
+        }
+        post("/api/state/startup") {
+            stateEndpoint.startup()
+        }
+        post("/api/state/fireworks") {
+            stateEndpoint.fireworks()
+        }
+        post("/api/state/force-on") {
+            stateEndpoint.forceOn()
+        }
+        get("/api/state") {
+            TreeState.state
+        }
+        get("/resource/mask.png") {
+            call.respondOutputStream(contentType = ContentType.Image.PNG,
+                    status = HttpStatusCode.OK,
+                    producer = producer())
         }
     }
 }
 
+fun producer(): suspend OutputStream.() -> Unit = {
+    javaClass.getResourceAsStream("/static/mask.png")!!.copyTo(this)
+}
+
 fun Application.configureSockets() {
-    val animationWebsocketEndpoint = AnimationWebsocketEndpoint()
+    val animationWebsocketEndpoint = Context.animationWebsocketEndpoint
 
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(5)
@@ -58,25 +84,3 @@ fun Application.configureSockets() {
         }
     }
 }
-
-
-
-private fun buildOpc(config: YamlConfig) =
-        Opc.builder(config.property("app.leds.opc.hostname").getString(), config.property("app.leds.opc.port").getString().toInt())
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .addPixelStrip(29).addPixelStrip(30)
-                .build()

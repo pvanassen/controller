@@ -8,11 +8,11 @@ import io.ktor.server.config.*
 
 class BrightnessClient(config: ApplicationConfig) {
 
-    private val brightnessUri = config.property("app.brightnes.uri").getString()
+    private val brightnessHost = config.property("app.brightness.host").getString()
 
     suspend fun getBrightness() =
         HttpClient(CIO).use {
-            val response = it.get(brightnessUri)
+            val response = it.get("http://$brightnessHost/brightness")
             response.body<String>().toFloat()
     }
 }

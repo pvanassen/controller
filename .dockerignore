@@ -1,6 +1,3 @@
-src/
-target/*javadoc.jar
-target/*sources.jar
-target/*/**
-.git
-.idea
+**
+!src/
+!pom.xml

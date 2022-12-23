@@ -1,7 +1,6 @@
 package nl.pvanassen.led.brightness
 
-import nl.pvanassen.christmas.tree.controller.model.BrightnessState
-import nl.pvanassen.christmas.tree.controller.model.StripsModel
+import nl.pvanassen.led.model.StripsModel
 
 class BrightnessService(private val brightnessClient: BrightnessClient,
                         private val stripsModel: StripsModel) {

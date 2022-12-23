@@ -1,0 +1,11 @@
+app:
+  tasmota:
+    host: "$ESPURNA_HOST:localhost"
+  brightness:
+    host: "$BRIGHTNESS_HOST:localhost"
+  leds:
+    fps: "$FPS:30"
+    seconds: "$SECONDS:25"
+    opc:
+      hostname: "$OPC_HOSTNAME:localhost"
+      port: "$OPC_PORT:7890"

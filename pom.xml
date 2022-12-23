@@ -17,6 +17,8 @@
         <logback.version>1.4.5</logback.version>
         <slf4j.version>2.0.5</slf4j.version>
         <ktor.version>2.2.1</ktor.version>
+        <kotlinx-serialisation.version>1.4.1</kotlinx-serialisation.version>
+        <opc.version>1.2.0</opc.version>
 
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
@@ -24,6 +26,8 @@
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
         <dokka-maven-plugin.version>1.7.20</dokka-maven-plugin.version>
+
+        <main.class>nl.pvanassen.led.ApplicationKt</main.class>
     </properties>
 
     <name>Common animation</name>
@@ -116,9 +120,14 @@
             <artifactId>ktor-serialization-kotlinx-json-jvm</artifactId>
         </dependency>
         <dependency>
-            <groupId>nl.pvanassen.christmas.tree</groupId>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-core-jvm</artifactId>
+            <version>${kotlinx-serialisation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.pvanassen.led</groupId>
             <artifactId>opc</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>${opc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -151,6 +160,17 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ucasoft.kcron</groupId>
+            <artifactId>kcron-common</artifactId>
+            <version>0.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-datetime-jvm</artifactId>
+            <version>0.4.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -206,6 +226,18 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <compilerPlugins>
+                        <plugin>kotlinx-serialization</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -304,6 +336,31 @@
                         <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>assemble-all</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
