@@ -1,0 +1,119 @@
+[
+  {
+    "name": "kotlin.reflect.jvm.internal.ReflectionFactoryImpl",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "kotlin.KotlinVersion",
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "kotlin.KotlinVersion[]"
+  },
+  {
+    "name": "kotlin.KotlinVersion$Companion"
+  },
+  {
+    "name": "kotlin.KotlinVersion$Companion[]"
+  },
+  {
+    "name": "kotlin.internal.jdk8.JDK8PlatformImplementations",
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "javax.imageio.spi.ImageReaderSpi"
+  },
+  {
+    "name": "javax.imageio.spi.ImageReaderWriterSpi",
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.ktor.network.selector.InterestSuspensionsMap",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredFields": true,
+    "fields": [
+      {
+        "name": "readHandlerReference",
+        "allowUnsafeAccess": true
+      },
+      {
+        "name": "writeHandlerReference",
+        "allowUnsafeAccess": true
+      },
+      {
+        "name": "connectHandlerReference",
+        "allowUnsafeAccess": true
+      },
+      {
+        "name": "acceptHandlerReference",
+        "allowUnsafeAccess": true
+      }
+    ]
+  },
+  {
+    "name":"nl.pvanassen.led.ApplicationKt",
+    "queryAllPublicMethods":true,
+    "methods":[
+      {"name":"configureRouting","parameterTypes":["io.ktor.server.application.Application"] },
+      {"name":"configureSockets","parameterTypes":["io.ktor.server.application.Application"] },
+      {"name":"main","parameterTypes":[] },
+      {"name":"module","parameterTypes":["io.ktor.server.application.Application"] }
+    ]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.Message",
+    "fields":[{"name":"Companion"}]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.Message$Companion",
+    "methods":[{"name":"serializer","parameterTypes":["kotlinx.serialization.KSerializer"] }]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.Registration",
+    "fields":[{"name":"Companion"}]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.Registration$Companion",
+    "methods":[{"name":"serializer","parameterTypes":[] }]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.RequestAnimation",
+    "fields":[{"name":"Companion"}]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.RequestAnimation$Companion",
+    "methods":[{"name":"serializer","parameterTypes":[] }]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.StartClient",
+    "fields":[{"name":"Companion"}]
+  },
+  {
+    "name":"nl.pvanassen.led.animation.StartClient$Companion",
+    "methods":[{"name":"serializer","parameterTypes":[] }]
+  },
+  {
+    "name":"sun.security.provider.SHA",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"java.util.concurrent.ScheduledThreadPoolExecutor",
+    "methods":[{"name":"setRemoveOnCancelPolicy","parameterTypes":["boolean"] }]
+  },
+  {
+    "name": "io.ktor.utils.io.pool.DefaultPool",
+    "fields" : [ { "name" : "top", "allowUnsafeAccess" : true } ]
+  }
+]
