@@ -1,2 +1,2 @@
 #!/bin/sh
-DOCKER_BUILDKIT=1 docker build . --build-arg arch=arm64 -t led-controller
+docker buildx build . --platform linux/amd64,linux/arm64 -t led-controller --progress=plain
