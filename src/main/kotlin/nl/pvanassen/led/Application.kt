@@ -72,8 +72,8 @@ fun Application.configureSockets() {
     val animationWebsocketEndpoint = Context.animationWebsocketEndpoint
 
     install(WebSockets) {
-        pingPeriod = Duration.ofSeconds(5)
-        timeout = Duration.ofSeconds(30)
+        pingPeriod = Duration.ofMillis(500)
+        timeout = Duration.ofSeconds(2)
         maxFrameSize = Long.MAX_VALUE
         masking = false
         contentConverter = KotlinxWebsocketSerializationConverter(Json)
