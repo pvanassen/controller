@@ -20,6 +20,10 @@ class AnimationClients {
         connectionsByConnection.remove(session)?.let { connectionsByName.remove(it) }
     }
 
+    fun removeClient(name: String) {
+        connectionsByName.remove(name)?.let { connectionsByConnection.remove(it) }
+    }
+
     fun receivedAnimation(frames: ByteArray, session: DefaultWebSocketServerSession) {
         val name = connectionsByConnection[session]
         callbackByName.remove(name)?.invoke(frames)

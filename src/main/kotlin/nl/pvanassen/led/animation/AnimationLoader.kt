@@ -57,9 +57,15 @@ class AnimationLoader(config: ApplicationConfig,
                 loading.set(false)
             }
             name?.let {
-                animationClients.requestAnimation(it, seconds, fps) { animation ->
-                    loading.set(false)
-                    byteArrayStoreService.addAnimation(animation, seconds, fps)
+                try {
+                    animationClients.requestAnimation(it, seconds, fps) { animation ->
+                        loading.set(false)
+                        byteArrayStoreService.addAnimation(animation, seconds, fps)
+                    }
+                }
+                catch (e: Exception) {
+                    logger.info("Error fetching from $name", e)
+                    animationClients.removeClient(name)
                 }
             }
         }
