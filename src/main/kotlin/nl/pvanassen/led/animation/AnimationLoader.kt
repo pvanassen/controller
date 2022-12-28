@@ -11,7 +11,7 @@ class AnimationLoader(config: ApplicationConfig,
                       private val byteArrayStoreService: ByteArrayStoreService,
                       private val animationClients: AnimationClients) {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)
+    private val log = LoggerFactory.getLogger(this.javaClass)
 
     private val loading = AtomicBoolean(false)
 
@@ -39,20 +39,22 @@ class AnimationLoader(config: ApplicationConfig,
             return
         }
         if (loading.get()) {
-            logger.info("Byte buffer still loading")
+            log.info("Byte buffer still loading")
             if (waitCycles-- == 0) {
-                logger.info("Byte buffer loading reset")
+                log.info("Byte buffer loading reset")
                 loading.set(false)
             }
             return
         }
         loading.set(true)
-        waitCycles = 20
+        waitCycles = 15
         if (TreeState.state == TreeState.State.ON) {
+            log.info("Known animations: ${animationClients.getAnimations()}")
             val name = animationClients.getAnimations()
                     .asSequence()
                     .shuffled()
                     .find { true }
+            log.info("Picking: $name")
             if (name == null) {
                 loading.set(false)
             }
@@ -64,7 +66,7 @@ class AnimationLoader(config: ApplicationConfig,
                     }
                 }
                 catch (e: Exception) {
-                    logger.info("Error fetching from $name", e)
+                    log.info("Error fetching from $name", e)
                     animationClients.removeClient(name)
                 }
             }

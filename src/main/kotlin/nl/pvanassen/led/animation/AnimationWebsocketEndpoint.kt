@@ -21,7 +21,7 @@ class AnimationWebsocketEndpoint(private val animationClients: AnimationClients,
                 FrameType.BINARY -> handleLedData(frame as Frame.Binary, webSocketServerSession)
                 FrameType.TEXT -> handleCommand(frame as Frame.Text, webSocketServerSession)
                 FrameType.CLOSE -> animationClients.removeClient(webSocketServerSession)
-                FrameType.PING, FrameType.PONG -> continue
+                FrameType.PING, FrameType.PONG -> log.info("Ping? Pong? ${frame.frameType}")
             }
         }
     }
