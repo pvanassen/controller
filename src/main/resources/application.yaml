@@ -1,6 +1,6 @@
 app:
   tasmota:
-    host: "$ESPURNA_HOST:localhost"
+    host: "$TASMOTA_HOST:localhost"
   brightness:
     host: "$BRIGHTNESS_HOST:localhost"
   leds:

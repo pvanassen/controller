@@ -16,16 +16,12 @@ class ByteArrayStoreService(ledModel: LedModel,
     private val frameSize = ledModel.totalPixels * 3
     private val frameList: MutableList<ByteArray> = LinkedList()
 
-    fun addAnimation(frames:ByteArray, seconds: Int, fps:Int) {
+    fun addAnimation(frames:ByteArray) {
         if (frames.size % frameSize != 0) {
             log.error("Size of ${frames.size} not equal to framesize")
             return
         }
-        val framesExpected = fps * seconds
-        if (frames.size / frameSize != framesExpected) {
-            log.error("Expecting $framesExpected frames, received ${frames.size / frameSize} frames")
-            return
-        }
+
         val nextAnimation = (0 until frames.size / frameSize).map {
             frames.sliceArray(IntRange(it * frameSize, ((it + 1) * frameSize) - 1))
         }

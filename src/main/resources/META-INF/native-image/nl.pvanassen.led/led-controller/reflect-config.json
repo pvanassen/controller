@@ -115,5 +115,9 @@
   {
     "name": "io.ktor.utils.io.pool.DefaultPool",
     "fields" : [ { "name" : "top", "allowUnsafeAccess" : true } ]
+  },
+  {
+    "name": "nl.pvanassen.led.model.TreeState",
+    "fields": [{"name": "state"}]
   }
 ]

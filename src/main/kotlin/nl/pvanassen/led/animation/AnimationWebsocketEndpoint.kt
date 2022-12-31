@@ -31,7 +31,7 @@ class AnimationWebsocketEndpoint(private val animationClients: AnimationClients,
         if (registration.type == "registration") {
             val name = registration.payload.name
             log.info("Hello $name")
-            animationClients.addClient(name, session)
+            animationClients.addClient(registration.payload, session)
         }
     }
 

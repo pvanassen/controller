@@ -49,20 +49,19 @@ class AnimationLoader(config: ApplicationConfig,
         loading.set(true)
         waitCycles = 15
         if (TreeState.state == TreeState.State.ON) {
-            log.info("Known animations: ${animationClients.getAnimations()}")
             val name = animationClients.getAnimations()
                     .asSequence()
                     .shuffled()
                     .find { true }
-            log.info("Picking: $name")
             if (name == null) {
                 loading.set(false)
             }
             name?.let {
+                log.info("Known animations: ${animationClients.getAnimations()}, picked: $name")
                 try {
                     animationClients.requestAnimation(it, seconds, fps) { animation ->
                         loading.set(false)
-                        byteArrayStoreService.addAnimation(animation, seconds, fps)
+                        byteArrayStoreService.addAnimation(animation)
                     }
                 }
                 catch (e: Exception) {
@@ -71,13 +70,29 @@ class AnimationLoader(config: ApplicationConfig,
                 }
             }
         }
+        if (TreeState.state == TreeState.State.FIREWORK) {
+            animationClients.requestFireworks(fps) {
+                loading.set(false)
+                byteArrayStoreService.addAnimation(it)
+            }
+        }
     }
 
-    fun loadSunrise() {
-        TODO("Not yet implemented")
+    suspend fun loadSunrise() {
+        animationClients.requestStartupAnimation(fps) {
+            byteArrayStoreService.addAnimation(it)
+        }
     }
 
-    fun loadSunset() {
-        TODO("Not yet implemented")
+    suspend fun loadSunset() {
+        animationClients.requestShutdownAnimation(fps) {
+            byteArrayStoreService.addAnimation(it)
+        }
+    }
+
+    suspend fun loadCron(name: String) {
+        animationClients.requestCronAnimation(name, fps) {
+            byteArrayStoreService.addAnimation(it)
+        }
     }
 }

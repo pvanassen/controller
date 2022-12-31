@@ -9,7 +9,7 @@ import nl.pvanassen.led.model.StripsModel
 import nl.pvanassen.led.power.TasmotaClient
 import nl.pvanassen.led.scheduler.AnimationPlayerRunnable
 import nl.pvanassen.led.scheduler.AutoBrightnessService
-import nl.pvanassen.led.scheduler.ShutdownWakeupService
+import nl.pvanassen.led.scheduler.TimedActionsService
 import nl.pvanassen.led.state.StateEndpoint
 import nl.pvanassen.opc.Opc
 import org.slf4j.LoggerFactory
@@ -30,8 +30,8 @@ object Context {
     private val byteArrayMergeService = ByteArrayMergeService(fps, byteArrayFrameService)
     private val byteArrayStoreService = ByteArrayStoreService(opc.ledModel, fps, byteArrayMergeService)
     private val animationLoader = AnimationLoader(config, byteArrayStoreService, animationClients)
-    private val shutdownWakeupService = ShutdownWakeupService(tasmotaClient, animationLoader)
-    val stateEndpoint = StateEndpoint(shutdownWakeupService, byteArrayStoreService)
+    private val timedActionsService = TimedActionsService(tasmotaClient, animationLoader, animationClients)
+    val stateEndpoint = StateEndpoint(timedActionsService, byteArrayStoreService, stripsModel)
 
     private val frameStreamService = FrameStreamService(stripsModel)
     private val animationPlayerRunnable = AnimationPlayerRunnable(fps, byteArrayStoreService, frameStreamService)
@@ -41,7 +41,7 @@ object Context {
         autoBrightnessService.start(CoroutineExceptionHandler { _, exception ->
             log.error("Uncaught exception in auto-brightness", exception)
         })
-        shutdownWakeupService.start()
+        timedActionsService.start()
         animationPlayerRunnable.start(CoroutineExceptionHandler { _, exception ->
             log.error("Uncaught exception in animation-player", exception)
         })

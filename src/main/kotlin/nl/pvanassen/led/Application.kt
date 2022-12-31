@@ -1,26 +1,30 @@
 package nl.pvanassen.led
 
+import com.sun.source.tree.Tree
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import kotlinx.serialization.json.Json
 import nl.pvanassen.led.brightness.BrightnessState
-import java.time.Duration
-import io.ktor.serialization.kotlinx.*
-import io.ktor.server.http.content.*
-import io.ktor.server.response.*
-import kotlinx.serialization.json.*
 import nl.pvanassen.led.model.TreeState
-import java.io.File
 import java.io.OutputStream
+import java.time.Duration
 
 fun main() {
     embeddedServer(CIO, port = 8080, module = Application::module).start(wait = true)
 }
 
 fun Application.module() {
+    install(ContentNegotiation) {
+        json()
+    }
     configureRouting()
     configureSockets()
 }
@@ -31,30 +35,31 @@ fun Application.configureRouting() {
 
     routing {
         get("/api/brightness") {
-            brightnessService.getBrightnessState()
+            call.respond(brightnessService.getBrightnessState())
         }
         post("/api/brightness/{state}") {
             call.parameters["state"]?.let {
                 brightnessService.updateBrightnessState(BrightnessState.State.valueOf(it.uppercase()))
             }
+            call.respond(brightnessService.getBrightnessState())
         }
         post("/api/state/shutdown") {
-            stateEndpoint.shutdown()
+            call.respond(stateEndpoint.shutdown())
         }
         post("/api/state/shutdown-now") {
-            stateEndpoint.shutdownNow()
+            call.respond(stateEndpoint.shutdownNow())
         }
         post("/api/state/startup") {
-            stateEndpoint.startup()
+            call.respond(stateEndpoint.startup())
         }
         post("/api/state/fireworks") {
-            stateEndpoint.fireworks()
+            call.respond(stateEndpoint.fireworks())
         }
         post("/api/state/force-on") {
-            stateEndpoint.forceOn()
+            call.respond(stateEndpoint.forceOn())
         }
         get("/api/state") {
-            TreeState.state
+            call.respond(TreeState.state)
         }
         get("/resource/mask.png") {
             call.respondOutputStream(contentType = ContentType.Image.PNG,
