@@ -2,12 +2,12 @@ package nl.pvanassen.led.animation
 
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.serialization.decodeFromString
-import nl.pvanassen.opc.LedModel
 import org.slf4j.LoggerFactory
 
-class AnimationWebsocketEndpoint(private val animationClients: AnimationClients,
-                                 private val strips: List<Int>) {
+class AnimationWebsocketEndpoint(
+        private val animationClients: AnimationClients,
+        private val strips: List<Int>
+) {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 
@@ -17,7 +17,7 @@ class AnimationWebsocketEndpoint(private val animationClients: AnimationClients,
         log.info("New connection!")
         webSocketServerSession.sendSerialized(Message("welcome", StartClient("/resource/mask.png", strips)))
         for (frame in webSocketServerSession.incoming) {
-            when(frame.frameType) {
+            when (frame.frameType) {
                 FrameType.BINARY -> handleLedData(frame as Frame.Binary, webSocketServerSession)
                 FrameType.TEXT -> handleCommand(frame as Frame.Text, webSocketServerSession)
                 FrameType.CLOSE -> animationClients.removeClient(webSocketServerSession)

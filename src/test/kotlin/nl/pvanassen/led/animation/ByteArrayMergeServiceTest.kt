@@ -34,7 +34,7 @@ internal class ByteArrayMergeServiceTest {
         assertEquals(r2.size, result.size + second.size - 120)
     }
 
-    private fun buildArray(color: Color, strips:Int, ledsPerStrip:Int, length:Int): List<ByteArray> {
+    private fun buildArray(color: Color, strips: Int, ledsPerStrip: Int, length: Int): List<ByteArray> {
         return (0 until length).map {
             (0 until strips * ledsPerStrip).flatMap {
                 arrayOf(color.red.toByte(), color.green.toByte(), color.blue.toByte()).asIterable()

@@ -1,6 +1,5 @@
 package nl.pvanassen.led
 
-import com.sun.source.tree.Tree
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
@@ -62,9 +61,11 @@ fun Application.configureRouting() {
             call.respond(TreeState.state)
         }
         get("/resource/mask.png") {
-            call.respondOutputStream(contentType = ContentType.Image.PNG,
+            call.respondOutputStream(
+                    contentType = ContentType.Image.PNG,
                     status = HttpStatusCode.OK,
-                    producer = producer())
+                    producer = producer()
+            )
         }
     }
 }

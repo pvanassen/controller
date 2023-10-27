@@ -15,8 +15,7 @@ class TasmotaClient(config: ApplicationConfig) {
     suspend fun switchOff() {
         try {
             HttpClient(CIO).use { it.get("http://$tasmotaHost/cm?cmnd=Power%20Off") }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             log.error("Error communicating with power switch", e)
         }
     }
@@ -24,8 +23,7 @@ class TasmotaClient(config: ApplicationConfig) {
     suspend fun switchOn() {
         try {
             HttpClient(CIO).use { it.get("http://$tasmotaHost/cm?cmnd=Power%20On") }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             log.error("Error communicating with power switch", e)
         }
     }

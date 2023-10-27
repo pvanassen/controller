@@ -35,6 +35,7 @@ class AnimationClients {
                 timedClientsByName[name] = session
                 timedClientNameCronMap[name] = registration.cron
             }
+
             AnimationType.FIREWORKS -> fireworksClientsByName[name] = session
         }
     }
@@ -57,13 +58,13 @@ class AnimationClients {
         }
     }
 
-    suspend fun requestAnimation(name: String, seconds:Int, fps:Int, callback: (ByteArray) -> Unit) {
+    suspend fun requestAnimation(name: String, seconds: Int, fps: Int, callback: (ByteArray) -> Unit) {
         log.info("Requesting animation from $name")
         callbackByName[name] = callback
         connectionsByName[name]?.sendSerialized(Message("request-animation", RequestAnimation(seconds, fps)))
     }
 
-    suspend fun requestStartupAnimation(fps:Int, callback: (ByteArray) -> Unit) {
+    suspend fun requestStartupAnimation(fps: Int, callback: (ByteArray) -> Unit) {
         val name = startupClientsByName.keys().asSequence().shuffled().find { true }
         log.info("Requesting startup animation $name")
         name?.let {
@@ -72,7 +73,7 @@ class AnimationClients {
         }
     }
 
-    suspend fun requestShutdownAnimation(fps:Int, callback: (ByteArray) -> Unit) {
+    suspend fun requestShutdownAnimation(fps: Int, callback: (ByteArray) -> Unit) {
         val name = shutdownClientsByName.keys().asSequence().shuffled().find { true }
         log.info("Requesting shutdown animation $name")
         name?.let {
@@ -89,13 +90,13 @@ class AnimationClients {
         return copy
     }
 
-    suspend fun requestCronAnimation(name: String, fps:Int, callback: (ByteArray) -> Unit) {
+    suspend fun requestCronAnimation(name: String, fps: Int, callback: (ByteArray) -> Unit) {
         log.info("Requesting cron animation $name")
         callbackByName[name] = callback
         shutdownClientsByName[name]?.sendSerialized(Message("request-animation", RequestAnimation(-1, fps)))
     }
 
-    suspend fun requestFireworks(fps:Int, callback: (ByteArray) -> Unit) {
+    suspend fun requestFireworks(fps: Int, callback: (ByteArray) -> Unit) {
         val name = fireworksClientsByName.keys().asSequence().shuffled().find { true }
         log.info("Requesting fireworks animation $name")
         name?.let {

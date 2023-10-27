@@ -4,9 +4,9 @@ import kotlinx.coroutines.*
 import nl.pvanassen.led.animation.ByteArrayStoreService
 import nl.pvanassen.led.animation.FrameStreamService
 import org.slf4j.LoggerFactory
-import kotlin.time.Duration
 import java.util.concurrent.Executors
 import kotlin.math.floor
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 
 class AnimationPlayerRunnable(fps: Int,

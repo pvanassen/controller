@@ -16,7 +16,7 @@ class ByteArrayStoreService(ledModel: LedModel,
     private val frameSize = ledModel.totalPixels * 3
     private val frameList: MutableList<ByteArray> = LinkedList()
 
-    fun addAnimation(frames:ByteArray) {
+    fun addAnimation(frames: ByteArray) {
         if (frames.size % frameSize != 0) {
             log.error("Size of ${frames.size} not equal to framesize")
             return
@@ -27,8 +27,7 @@ class ByteArrayStoreService(ledModel: LedModel,
         }
         val transition = if (TreeState.state == TreeState.State.FIREWORK) {
             1000
-        }
-        else {
+        } else {
             2000
         }
         lock.withLock {

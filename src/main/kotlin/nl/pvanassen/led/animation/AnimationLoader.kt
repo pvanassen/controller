@@ -63,8 +63,7 @@ class AnimationLoader(config: ApplicationConfig,
                         loading.set(false)
                         byteArrayStoreService.addAnimation(animation)
                     }
-                }
-                catch (e: Exception) {
+                } catch (e: Exception) {
                     log.info("Error fetching from $name", e)
                     animationClients.removeClient(name)
                 }

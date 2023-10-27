@@ -3,7 +3,7 @@ package nl.pvanassen.led.model
 import nl.pvanassen.opc.Opc
 import org.slf4j.LoggerFactory
 
-class StripsModel(private val empty:Boolean, private val opc: Opc) {
+class StripsModel(private val empty: Boolean, private val opc: Opc) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -21,7 +21,7 @@ class StripsModel(private val empty:Boolean, private val opc: Opc) {
         opc.setPixelColor(pixel, color)
     }
 
-    suspend fun setBrightness(brightness:Float) {
+    suspend fun setBrightness(brightness: Float) {
         logger.info("Setting brightness to $brightness")
 
         if (brightness >= 0.8) {

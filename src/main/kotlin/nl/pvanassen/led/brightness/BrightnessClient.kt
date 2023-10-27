@@ -11,8 +11,8 @@ class BrightnessClient(config: ApplicationConfig) {
     private val brightnessHost = config.property("app.brightness.host").getString()
 
     suspend fun getBrightness() =
-        HttpClient(CIO).use {
-            val response = it.get("http://$brightnessHost/brightness")
-            response.body<String>().toFloat()
-    }
+            HttpClient(CIO).use {
+                val response = it.get("http://$brightnessHost/brightness")
+                response.body<String>().toFloat()
+            }
 }

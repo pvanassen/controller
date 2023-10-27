@@ -4,8 +4,8 @@ import com.ucasoft.kcron.KCron
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
 import nl.pvanassen.led.animation.AnimationClients
-import nl.pvanassen.led.model.TreeState
 import nl.pvanassen.led.animation.AnimationLoader
+import nl.pvanassen.led.model.TreeState
 import nl.pvanassen.led.power.TasmotaClient
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
@@ -41,16 +41,15 @@ class TimedActionsService(private val tasmotaClient: TasmotaClient,
 
     private fun loadTimedTasks() {
         val nameCronMap = animationClients.removeNameCronEntries()
-        nameCronMap.forEach {(name, cron) ->
+        nameCronMap.forEach { (name, cron) ->
             try {
                 val nextRuns = KCron.parseAndBuild(cron).nextRunList(5000)
-                    .filter { it.toJavaLocalDateTime().isBefore(java.time.LocalDateTime.now().plusYears(1) )}
-                    .map { (it.toInstant(TimeZone.currentSystemDefault()) - Clock.System.now()).inWholeMinutes }
+                        .filter { it.toJavaLocalDateTime().isBefore(java.time.LocalDateTime.now().plusYears(1)) }
+                        .map { (it.toInstant(TimeZone.currentSystemDefault()) - Clock.System.now()).inWholeMinutes }
                 nextRuns.forEach {
                     executor.schedule({ runBlocking { animationLoader.loadCron(name) } }, it, TimeUnit.MINUTES)
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 logger.error("Error scheduling $name with cron '$cron'")
             }
         }

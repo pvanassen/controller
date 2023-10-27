@@ -36,8 +36,7 @@ class AutoBrightnessService(private val stripsModel: StripsModel,
         }
         try {
             stripsModel.setBrightness(brightnessClient.getBrightness())
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             log.warn("Error setting brightness", e)
             stripsModel.setBrightness(0.3f)
         }

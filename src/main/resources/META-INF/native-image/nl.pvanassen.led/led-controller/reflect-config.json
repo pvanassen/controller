@@ -63,61 +63,138 @@
     ]
   },
   {
-    "name":"nl.pvanassen.led.ApplicationKt",
-    "queryAllPublicMethods":true,
-    "methods":[
-      {"name":"configureRouting","parameterTypes":["io.ktor.server.application.Application"] },
-      {"name":"configureSockets","parameterTypes":["io.ktor.server.application.Application"] },
-      {"name":"main","parameterTypes":[] },
-      {"name":"module","parameterTypes":["io.ktor.server.application.Application"] }
+    "name": "nl.pvanassen.led.ApplicationKt",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "configureRouting",
+        "parameterTypes": [
+          "io.ktor.server.application.Application"
+        ]
+      },
+      {
+        "name": "configureSockets",
+        "parameterTypes": [
+          "io.ktor.server.application.Application"
+        ]
+      },
+      {
+        "name": "main",
+        "parameterTypes": []
+      },
+      {
+        "name": "module",
+        "parameterTypes": [
+          "io.ktor.server.application.Application"
+        ]
+      }
     ]
   },
   {
-    "name":"nl.pvanassen.led.animation.Message",
-    "fields":[{"name":"Companion"}]
+    "name": "nl.pvanassen.led.animation.Message",
+    "fields": [
+      {
+        "name": "Companion"
+      }
+    ]
   },
   {
-    "name":"nl.pvanassen.led.animation.Message$Companion",
-    "methods":[{"name":"serializer","parameterTypes":["kotlinx.serialization.KSerializer"] }]
+    "name": "nl.pvanassen.led.animation.Message$Companion",
+    "methods": [
+      {
+        "name": "serializer",
+        "parameterTypes": [
+          "kotlinx.serialization.KSerializer"
+        ]
+      }
+    ]
   },
   {
-    "name":"nl.pvanassen.led.animation.Registration",
-    "fields":[{"name":"Companion"}]
+    "name": "nl.pvanassen.led.animation.Registration",
+    "fields": [
+      {
+        "name": "Companion"
+      }
+    ]
   },
   {
-    "name":"nl.pvanassen.led.animation.Registration$Companion",
-    "methods":[{"name":"serializer","parameterTypes":[] }]
+    "name": "nl.pvanassen.led.animation.Registration$Companion",
+    "methods": [
+      {
+        "name": "serializer",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"nl.pvanassen.led.animation.RequestAnimation",
-    "fields":[{"name":"Companion"}]
+    "name": "nl.pvanassen.led.animation.RequestAnimation",
+    "fields": [
+      {
+        "name": "Companion"
+      }
+    ]
   },
   {
-    "name":"nl.pvanassen.led.animation.RequestAnimation$Companion",
-    "methods":[{"name":"serializer","parameterTypes":[] }]
+    "name": "nl.pvanassen.led.animation.RequestAnimation$Companion",
+    "methods": [
+      {
+        "name": "serializer",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"nl.pvanassen.led.animation.StartClient",
-    "fields":[{"name":"Companion"}]
+    "name": "nl.pvanassen.led.animation.StartClient",
+    "fields": [
+      {
+        "name": "Companion"
+      }
+    ]
   },
   {
-    "name":"nl.pvanassen.led.animation.StartClient$Companion",
-    "methods":[{"name":"serializer","parameterTypes":[] }]
+    "name": "nl.pvanassen.led.animation.StartClient$Companion",
+    "methods": [
+      {
+        "name": "serializer",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"sun.security.provider.SHA",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "sun.security.provider.SHA",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"java.util.concurrent.ScheduledThreadPoolExecutor",
-    "methods":[{"name":"setRemoveOnCancelPolicy","parameterTypes":["boolean"] }]
+    "name": "java.util.concurrent.ScheduledThreadPoolExecutor",
+    "methods": [
+      {
+        "name": "setRemoveOnCancelPolicy",
+        "parameterTypes": [
+          "boolean"
+        ]
+      }
+    ]
   },
   {
     "name": "io.ktor.utils.io.pool.DefaultPool",
-    "fields" : [ { "name" : "top", "allowUnsafeAccess" : true } ]
+    "fields": [
+      {
+        "name": "top",
+        "allowUnsafeAccess": true
+      }
+    ]
   },
   {
     "name": "nl.pvanassen.led.model.TreeState",
-    "fields": [{"name": "state"}]
+    "fields": [
+      {
+        "name": "state"
+      }
+    ]
   }
 ]
