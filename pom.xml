@@ -28,6 +28,7 @@
         <dokka-maven-plugin.version>1.9.10</dokka-maven-plugin.version>
 
         <main.class>nl.pvanassen.led.ApplicationKt</main.class>
+        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
     </properties>
 
     <name>Common animation</name>
@@ -343,7 +344,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
+                <version>${maven-assembly-plugin.version}</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
