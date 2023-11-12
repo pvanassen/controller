@@ -1,6 +1,7 @@
 package nl.pvanassen.led.animation
 
 import io.ktor.server.websocket.*
+import nl.pvanassen.led.animation.AnimationType.*
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 
@@ -28,15 +29,15 @@ class AnimationClients {
         val name = registration.name
         connectionNameMap[session] = name
         when (registration.type) {
-            AnimationType.NORMAL -> connectionsByName[name] = session
-            AnimationType.ON_SHUTDOWN -> shutdownClientsByName[name] = session
-            AnimationType.ON_STARTUP -> startupClientsByName[name] = session
-            AnimationType.TIMED -> {
+            NORMAL -> connectionsByName[name] = session
+            ON_SHUTDOWN -> shutdownClientsByName[name] = session
+            ON_STARTUP -> startupClientsByName[name] = session
+            TIMED -> {
                 timedClientsByName[name] = session
                 timedClientNameCronMap[name] = registration.cron
             }
 
-            AnimationType.FIREWORKS -> fireworksClientsByName[name] = session
+            FIREWORKS -> fireworksClientsByName[name] = session
         }
     }
 

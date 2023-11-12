@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import nl.pvanassen.led.animation.*
 import nl.pvanassen.led.brightness.BrightnessClient
 import nl.pvanassen.led.brightness.BrightnessService
-import nl.pvanassen.led.model.StripsModel
+import nl.pvanassen.led.model.StripModelFactory
 import nl.pvanassen.led.power.TasmotaClient
 import nl.pvanassen.led.scheduler.AnimationPlayerRunnable
 import nl.pvanassen.led.scheduler.AutoBrightnessService
@@ -20,7 +20,7 @@ object Context {
     private val fps = config.property("app.leds.fps").getString().toInt()
     private val strips = buildMatrix()
     private val opc = buildOpc(strips)
-    private val stripsModel = StripsModel(false, opc)
+    private val stripsModel = StripModelFactory.getStripModel(opc)
     private val animationClients = AnimationClients()
     val animationWebsocketEndpoint = AnimationWebsocketEndpoint(animationClients, strips)
     private val brightnessClient = BrightnessClient(config)
@@ -59,7 +59,10 @@ object Context {
     }
 
     private fun buildOpc(strips: List<Int>): Opc {
-        val builder = Opc.builder(config.property("app.leds.opc.hostname").getString(), config.property("app.leds.opc.port").getString().toInt())
+        val builder = Opc.builder(
+            config.property("app.leds.opc.hostname").getString(),
+            config.property("app.leds.opc.port").getString().toInt()
+        )
         strips.forEach {
             builder.addPixelStrip(it)
         }
