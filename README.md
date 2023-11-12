@@ -1,3 +1,5 @@
-# christmas-tree-controller
+# Led controller
 
-The tree controller, written in Kotlin
+A kotlin LED controller which queries animations, merges them and pushes them to an OPC client. 
+
+
