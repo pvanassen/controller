@@ -59,8 +59,6 @@ class DebugStripsModel : StripsModel, JFrame() {
         repaint()
     }
 
-    override fun isEmpty() = false
-
     override fun setPixelColor(pixel: Int, color: Int) {
         val position = positionsList[pixel]
         buffer.setRGB(position.x, position.y, color)

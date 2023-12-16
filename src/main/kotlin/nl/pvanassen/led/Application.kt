@@ -62,9 +62,9 @@ fun Application.configureRouting() {
         }
         get("/resource/mask.png") {
             call.respondOutputStream(
-                    contentType = ContentType.Image.PNG,
-                    status = HttpStatusCode.OK,
-                    producer = producer()
+                contentType = ContentType.Image.PNG,
+                status = HttpStatusCode.OK,
+                producer = producer()
             )
         }
     }

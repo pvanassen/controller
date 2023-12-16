@@ -10,19 +10,21 @@ import java.util.concurrent.Executors
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class AutoBrightnessService(private val stripsModel: StripsModel,
-                            private val brightnessClient: BrightnessClient) {
+class AutoBrightnessService(
+    private val stripsModel: StripsModel,
+    private val brightnessClient: BrightnessClient
+) {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 
     fun start(coroutineExceptionHandler: CoroutineExceptionHandler) {
         CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
-                .launch(coroutineExceptionHandler) {
-                    while (true) {
-                        autoAdjustBrightness()
-                        delay(1.toDuration(DurationUnit.MINUTES))
-                    }
+            .launch(coroutineExceptionHandler) {
+                while (true) {
+                    autoAdjustBrightness()
+                    delay(1.toDuration(DurationUnit.MINUTES))
                 }
+            }
 
     }
 

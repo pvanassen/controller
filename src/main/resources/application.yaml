@@ -3,9 +3,14 @@ app:
     host: "$TASMOTA_HOST:localhost"
   brightness:
     host: "$BRIGHTNESS_HOST:localhost"
+    port: "$BRIGHTNESS_PORT:80"
   leds:
-    fps: "$FPS:30"
+    fps: "$FPS:60"
     seconds: "$SECONDS:25"
     opc:
-      hostname: "$OPC_HOSTNAME:localhost"
+      host: "$OPC_HOST:localhost"
       port: "$OPC_PORT:7890"
+  mqtt:
+    host: "$MQTT_HOST:localhost"
+    port: "$MQTT_PORT:1883"
+  debug: "$DEBUG:false"

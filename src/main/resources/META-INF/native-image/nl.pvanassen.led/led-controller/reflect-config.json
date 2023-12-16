@@ -91,6 +91,23 @@
     ]
   },
   {
+    "name": "nl.pvanassen.led.brightness.BrightnessResponse",
+    "fields": [
+      {
+        "name": "Companion"
+      }
+    ]
+  },
+  {
+    "name": "nl.pvanassen.led.brightness.BrightnessResponse$Companion",
+    "methods": [
+      {
+        "name": "serializer",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "nl.pvanassen.led.animation.Message",
     "fields": [
       {

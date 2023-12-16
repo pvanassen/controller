@@ -6,6 +6,8 @@ import nl.pvanassen.led.animation.*
 import nl.pvanassen.led.brightness.BrightnessClient
 import nl.pvanassen.led.brightness.BrightnessService
 import nl.pvanassen.led.model.StripModelFactory
+import nl.pvanassen.led.mqtt.CommandHandler
+import nl.pvanassen.led.mqtt.MqttService
 import nl.pvanassen.led.power.TasmotaClient
 import nl.pvanassen.led.scheduler.AnimationPlayerRunnable
 import nl.pvanassen.led.scheduler.AutoBrightnessService
@@ -19,8 +21,9 @@ object Context {
     private val config = YamlConfig(null)!!
     private val fps = config.property("app.leds.fps").getString().toInt()
     private val strips = buildMatrix()
-    private val opc = buildOpc(strips)
-    private val stripsModel = StripModelFactory.getStripModel(opc)
+    private val opc = buildOpc()
+    private val mqttService = MqttService(config, CommandHandler())
+    private val stripsModel = StripModelFactory.getStripModel(opc, mqttService, config)
     private val animationClients = AnimationClients()
     val animationWebsocketEndpoint = AnimationWebsocketEndpoint(animationClients, strips)
     private val brightnessClient = BrightnessClient(config)
@@ -29,7 +32,7 @@ object Context {
     private val byteArrayFrameService = ByteArrayFrameService(opc.ledModel)
     private val byteArrayMergeService = ByteArrayMergeService(fps, byteArrayFrameService)
     private val byteArrayStoreService = ByteArrayStoreService(opc.ledModel, fps, byteArrayMergeService)
-    private val animationLoader = AnimationLoader(config, byteArrayStoreService, animationClients)
+    private val animationLoader = AnimationLoader(config, byteArrayStoreService, animationClients, mqttService)
     private val timedActionsService = TimedActionsService(tasmotaClient, animationLoader, animationClients)
     val stateEndpoint = StateEndpoint(timedActionsService, byteArrayStoreService, stripsModel)
 
@@ -38,6 +41,7 @@ object Context {
     private val autoBrightnessService = AutoBrightnessService(stripsModel, brightnessClient)
 
     init {
+
         autoBrightnessService.start(CoroutineExceptionHandler { _, exception ->
             log.error("Uncaught exception in auto-brightness", exception)
         })
@@ -58,9 +62,9 @@ object Context {
         30
     }
 
-    private fun buildOpc(strips: List<Int>): Opc {
+    private fun buildOpc(): Opc {
         val builder = Opc.builder(
-            config.property("app.leds.opc.hostname").getString(),
+            config.property("app.leds.opc.host").getString(),
             config.property("app.leds.opc.port").getString().toInt()
         )
         strips.forEach {

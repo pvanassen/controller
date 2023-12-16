@@ -3,13 +3,17 @@ package nl.pvanassen.led.animation
 import io.ktor.server.config.*
 import kotlinx.coroutines.*
 import nl.pvanassen.led.model.TreeState
+import nl.pvanassen.led.mqtt.MqttService
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
-class AnimationLoader(config: ApplicationConfig,
-                      private val byteArrayStoreService: ByteArrayStoreService,
-                      private val animationClients: AnimationClients) {
+class AnimationLoader(
+    config: ApplicationConfig,
+    private val byteArrayStoreService: ByteArrayStoreService,
+    private val animationClients: AnimationClients,
+    private val mqttService: MqttService
+) {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 
@@ -23,12 +27,12 @@ class AnimationLoader(config: ApplicationConfig,
 
     fun start(coroutineExceptionHandler: CoroutineExceptionHandler) {
         CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
-                .launch(coroutineExceptionHandler) {
-                    while (true) {
-                        delay(1000L)
-                        checkBufferStatus()
-                    }
+            .launch(coroutineExceptionHandler) {
+                while (true) {
+                    delay(1000L)
+                    checkBufferStatus()
                 }
+            }
     }
 
     private suspend fun checkBufferStatus() {
@@ -50,9 +54,9 @@ class AnimationLoader(config: ApplicationConfig,
         waitCycles = 15
         if (TreeState.state == TreeState.State.ON) {
             val name = animationClients.getAnimations()
-                    .asSequence()
-                    .shuffled()
-                    .find { true }
+                .asSequence()
+                .shuffled()
+                .find { true }
             if (name == null) {
                 loading.set(false)
             }
@@ -61,6 +65,7 @@ class AnimationLoader(config: ApplicationConfig,
                 try {
                     animationClients.requestAnimation(it, seconds, fps) { animation ->
                         loading.set(false)
+                        mqttService.sendAnimationRunning(name)
                         byteArrayStoreService.addAnimation(animation)
                     }
                 } catch (e: Exception) {
@@ -72,6 +77,7 @@ class AnimationLoader(config: ApplicationConfig,
         if (TreeState.state == TreeState.State.FIREWORK) {
             animationClients.requestFireworks(fps) {
                 loading.set(false)
+                mqttService.sendAnimationRunning("fireworks")
                 byteArrayStoreService.addAnimation(it)
             }
         }
@@ -79,18 +85,21 @@ class AnimationLoader(config: ApplicationConfig,
 
     suspend fun loadSunrise() {
         animationClients.requestStartupAnimation(fps) {
+            mqttService.sendAnimationRunning("sunrise")
             byteArrayStoreService.addAnimation(it)
         }
     }
 
     suspend fun loadSunset() {
         animationClients.requestShutdownAnimation(fps) {
+            mqttService.sendAnimationRunning("sunset")
             byteArrayStoreService.addAnimation(it)
         }
     }
 
     suspend fun loadCron(name: String) {
         animationClients.requestCronAnimation(name, fps) {
+            mqttService.sendAnimationRunning(name)
             byteArrayStoreService.addAnimation(it)
         }
     }

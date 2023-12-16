@@ -5,9 +5,6 @@ import nl.pvanassen.led.model.StripsModel
 class FrameStreamService(private val pixelStrips: StripsModel) {
 
     suspend fun pushFrame(byteArray: ByteArray) {
-        if (pixelStrips.isEmpty()) {
-            return
-        }
         (byteArray.indices step 3).forEach {
             val red = byteArray[it].toInt() and 0xFF
             val green = byteArray[it + 1].toInt() and 0xFF
