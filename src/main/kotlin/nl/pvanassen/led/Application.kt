@@ -29,18 +29,17 @@ fun Application.module() {
 }
 
 fun Application.configureRouting() {
-    val brightnessService = Context.brightnessService
     val stateEndpoint = Context.stateEndpoint
 
     routing {
         get("/api/brightness") {
-            call.respond(brightnessService.getBrightnessState())
+            call.respond(BrightnessState.state)
         }
         post("/api/brightness/{state}") {
             call.parameters["state"]?.let {
-                brightnessService.updateBrightnessState(BrightnessState.State.valueOf(it.uppercase()))
+                BrightnessState.state = BrightnessState.State.valueOf(it.uppercase())
             }
-            call.respond(brightnessService.getBrightnessState())
+            call.respond(BrightnessState.state)
         }
         post("/api/state/shutdown") {
             call.respond(stateEndpoint.shutdown())

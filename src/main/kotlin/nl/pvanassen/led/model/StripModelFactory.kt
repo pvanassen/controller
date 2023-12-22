@@ -21,7 +21,7 @@ object StripModelFactory {
 @TargetClass(value = StripModelFactory::class)
 internal class StripModelFactoryIsSubstitutions {
     @Substitute
-    fun getStripModel(opc: Opc, mqttService: MqttService): StripsModel {
+    fun getStripModel(opc: Opc, mqttService: MqttService, config: ApplicationConfig): StripsModel {
         return OpcStripsModel(opc, mqttService)
     }
 }

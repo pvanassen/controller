@@ -4,6 +4,7 @@ app:
   brightness:
     host: "$BRIGHTNESS_HOST:localhost"
     port: "$BRIGHTNESS_PORT:80"
+    min: "$BRIGHTNESS_MIN:0.3"
   leds:
     fps: "$FPS:60"
     seconds: "$SECONDS:25"
@@ -14,3 +15,5 @@ app:
     host: "$MQTT_HOST:localhost"
     port: "$MQTT_PORT:1883"
   debug: "$DEBUG:false"
+  ip: "$IP:"
+  hostname: "$HOSTNAME:"

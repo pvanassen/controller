@@ -18,7 +18,7 @@ import kotlin.concurrent.thread
 
 
 @OptIn(ExperimentalUnsignedTypes::class)
-class MqttService(config: ApplicationConfig, commandHandler: CommandHandler) {
+class MqttService(private val config: ApplicationConfig, commandHandler: CommandHandler) {
 
     companion object {
         private val log = LoggerFactory.getLogger(this::class.java)
@@ -32,7 +32,8 @@ class MqttService(config: ApplicationConfig, commandHandler: CommandHandler) {
     ) {
         try {
             when (it.topicName) {
-                "cmnd/led-controller/${InetAddress.getLocalHost().hostName}" -> commandHandler.parse(String(it.payload!!.toByteArray()))
+                "cmnd/led-controller/${getHostname()}/state" -> commandHandler.state(String(it.payload!!.toByteArray()))
+                "cmnd/led-controller/${getHostname()}/brightness" -> commandHandler.brightness(String(it.payload!!.toByteArray()))
             }
         } catch (e: Exception) {
             log.error("Error handling message", e)
@@ -44,7 +45,11 @@ class MqttService(config: ApplicationConfig, commandHandler: CommandHandler) {
             client.subscribe(
                 listOf(
                     Subscription(
-                        "cmnd/led-controller/${InetAddress.getLocalHost().hostName}",
+                        "cmnd/led-controller/${getHostname()}/state",
+                        SubscriptionOptions(Qos.AT_LEAST_ONCE)
+                    ),
+                    Subscription(
+                        "cmnd/led-controller/${getHostname()}/brightness",
                         SubscriptionOptions(Qos.AT_LEAST_ONCE)
                     )
                 )
@@ -52,15 +57,19 @@ class MqttService(config: ApplicationConfig, commandHandler: CommandHandler) {
             client.publish(
                 false,
                 Qos.AT_LEAST_ONCE,
-                "led-controller/discovery/${InetAddress.getLocalHost().hostName}",
-                """{"hostname": "${InetAddress.getLocalHost().hostName}", 
+                "led-controller/discovery/${getHostname()}",
+                """{"hostname": "${getHostname()}", 
                     |"ip": "${getIpAddress()}",
                     |"version": "1"
                     |} """.trimMargin().encodeToByteArray().toUByteArray()
             )
-            TreeState.registerCallback {
-                publishState()
+            TreeState.registerCallback { _, state ->
+                publishState(state, BrightnessState.state)
             }
+            BrightnessState.registerCallback { _, state ->
+                publishState(TreeState.state, state)
+            }
+
             thread(start = true) {
                 client.run()
             }
@@ -73,8 +82,7 @@ class MqttService(config: ApplicationConfig, commandHandler: CommandHandler) {
         client.publish(
             false,
             Qos.EXACTLY_ONCE,
-            "stat/led-controller/animation",
-            """{ "animation": "$animation" }""".encodeToByteArray().toUByteArray()
+            "stat/led-controller/${getHostname()}/animation", animation.encodeToByteArray().toUByteArray()
         )
     }
 
@@ -82,37 +90,50 @@ class MqttService(config: ApplicationConfig, commandHandler: CommandHandler) {
         client.publish(
             false,
             Qos.EXACTLY_ONCE,
-            "tele/led-controller/brightness",
-            """{ "brightness": $brightness }""".encodeToByteArray().toUByteArray()
+            "tele/led-controller/${getHostname()}/brightness", brightness.toString().encodeToByteArray().toUByteArray()
         )
     }
 
-    private fun publishState() {
+    private fun publishState(treeState: TreeState.State, brightnessState: BrightnessState.State) {
         client.publish(
             false,
             Qos.AT_LEAST_ONCE,
-            "stat/led-controller/${InetAddress.getLocalHost().hostName}",
-            """{
-                        |"tree-state": "${TreeState.state}",
-                        |"brightness-state": "${BrightnessState.state}"
-                        |} """.trimMargin().encodeToByteArray().toUByteArray()
+            "stat/led-controller/${getHostname()}/state", treeState.name.encodeToByteArray().toUByteArray()
+        )
+        client.publish(
+            false,
+            Qos.AT_LEAST_ONCE,
+            "stat/led-controller/${getHostname()}/brightness",
+            brightnessState.name.encodeToByteArray().toUByteArray()
         )
     }
 
     private fun getIpAddress(): String {
+        if (config.propertyOrNull("app.ip") != null && config.propertyOrNull("app.ip")!!.getString().isNotBlank()) {
+            return config.propertyOrNull("app.ip")!!.getString()
+        }
         val e: Enumeration<*> = NetworkInterface.getNetworkInterfaces()
         while (e.hasMoreElements()) {
             val n = e.nextElement() as NetworkInterface
             val ee: Enumeration<*> = n.inetAddresses
             while (ee.hasMoreElements()) {
                 val i = ee.nextElement() as InetAddress
-                if (i is Inet6Address || i.hostAddress.startsWith("127")) {
+                if (i is Inet6Address || i.hostAddress.startsWith("127") || i.hostAddress.startsWith("172")) {
                     continue
                 }
                 return i.hostAddress
             }
         }
         return "127.0.0.1"
+    }
+
+    private fun getHostname(): String {
+        if (config.propertyOrNull("app.hostname") != null && config.propertyOrNull("app.hostname")!!.getString()
+                .isNotBlank()
+        ) {
+            return config.propertyOrNull("app.hostname")!!.getString()
+        }
+        return InetAddress.getLocalHost().hostName
     }
 
 }

@@ -83,6 +83,10 @@ class AnimationLoader(
         }
     }
 
+    fun reset() {
+        byteArrayStoreService.reset()
+    }
+
     suspend fun loadSunrise() {
         animationClients.requestStartupAnimation(fps) {
             mqttService.sendAnimationRunning("sunrise")

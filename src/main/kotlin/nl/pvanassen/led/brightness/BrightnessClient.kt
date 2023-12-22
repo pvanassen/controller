@@ -16,6 +16,8 @@ class BrightnessClient(config: ApplicationConfig) {
 
     private val brightnessPort = config.property("app.brightness.port").getString().toInt()
 
+    private val minBrightness = config.tryGetString("app.brightness.min")!!.toFloat()
+
     suspend fun getBrightness(): Float =
         HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -23,7 +25,8 @@ class BrightnessClient(config: ApplicationConfig) {
             }
         }.use {
             val response = it.get("http://$brightnessHost:$brightnessPort/")
-            max(0.1f, min(1f, response.body<BrightnessResponse>().lux / 1600f))
+
+            max(minBrightness, min(0.9f, response.body<BrightnessResponse>().lux / 1600f))
         }
 
 }

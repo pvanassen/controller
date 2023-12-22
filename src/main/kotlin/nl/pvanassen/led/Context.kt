@@ -27,21 +27,20 @@ object Context {
     private val animationClients = AnimationClients()
     val animationWebsocketEndpoint = AnimationWebsocketEndpoint(animationClients, strips)
     private val brightnessClient = BrightnessClient(config)
-    val brightnessService = BrightnessService(brightnessClient, stripsModel)
     private val tasmotaClient = TasmotaClient(config)
     private val byteArrayFrameService = ByteArrayFrameService(opc.ledModel)
     private val byteArrayMergeService = ByteArrayMergeService(fps, byteArrayFrameService)
     private val byteArrayStoreService = ByteArrayStoreService(opc.ledModel, fps, byteArrayMergeService)
     private val animationLoader = AnimationLoader(config, byteArrayStoreService, animationClients, mqttService)
     private val timedActionsService = TimedActionsService(tasmotaClient, animationLoader, animationClients)
-    val stateEndpoint = StateEndpoint(timedActionsService, byteArrayStoreService, stripsModel)
+    val stateEndpoint = StateEndpoint(timedActionsService, byteArrayStoreService)
 
     private val frameStreamService = FrameStreamService(stripsModel)
     private val animationPlayerRunnable = AnimationPlayerRunnable(fps, byteArrayStoreService, frameStreamService)
     private val autoBrightnessService = AutoBrightnessService(stripsModel, brightnessClient)
 
     init {
-
+        BrightnessService(config, brightnessClient, stripsModel)
         autoBrightnessService.start(CoroutineExceptionHandler { _, exception ->
             log.error("Uncaught exception in auto-brightness", exception)
         })
