@@ -32,7 +32,7 @@ object Context {
     private val byteArrayMergeService = ByteArrayMergeService(fps, byteArrayFrameService)
     private val byteArrayStoreService = ByteArrayStoreService(opc.ledModel, fps, byteArrayMergeService)
     private val animationLoader = AnimationLoader(config, byteArrayStoreService, animationClients, mqttService)
-    private val timedActionsService = TimedActionsService(tasmotaClient, animationLoader, animationClients)
+    private val timedActionsService = TimedActionsService(config, tasmotaClient, animationLoader, animationClients)
     val stateEndpoint = StateEndpoint(timedActionsService, byteArrayStoreService)
 
     private val frameStreamService = FrameStreamService(stripsModel)

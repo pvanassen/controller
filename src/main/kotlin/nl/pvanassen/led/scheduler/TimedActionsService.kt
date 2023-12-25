@@ -1,6 +1,7 @@
 package nl.pvanassen.led.scheduler
 
 import com.ucasoft.kcron.KCron
+import io.ktor.server.config.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
 import nl.pvanassen.led.animation.AnimationClients
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.hours
 
 class TimedActionsService(
+    config: ApplicationConfig,
     tasmotaClient: TasmotaClient,
     private val animationLoader: AnimationLoader,
     private val animationClients: AnimationClients
@@ -23,15 +25,15 @@ class TimedActionsService(
 
     private val executor = Executors.newScheduledThreadPool(1)
 
-    private val wakePowerCron = "0 55 6 ? * * *"
+    private val wakePowerCron = config.tryGetString("app.cron.power-on")!!
 
-    private val fullOn = "0 5 7 ? * * *"
+    private val fullOn = config.tryGetString("app.cron.full-on")!!
 
-    private val shuttingDownCron = "0 0 23 ? * * *"
+    private val shuttingDownCron = config.tryGetString("app.cron.shutting-down")!!
 
-    private val shutdownCron = "0 5 23 ? * * *"
+    private val shutdownCron = config.tryGetString("app.cron.shutdown")!!
 
-    private val fireworkCron = "0 59 23 31 12 * *"
+    private val fireworkCron = config.tryGetString("app.cron.firework")!!
 
     init {
         TreeState.registerCallback { oldState, newState ->

@@ -17,3 +17,9 @@ app:
   debug: "$DEBUG:false"
   ip: "$IP:"
   hostname: "$HOSTNAME:"
+  cron:
+    power-on: "$CRON_POWER_ON:0 55 6 ? * * *"
+    full-on: "$CRON_FULL_ON:0 5 7 ? * * *"
+    shutting-down: "$CRON_SHUTTING_DOWN:0 0 21 ? * * *"
+    shutdown: "$CRON_SHUTDOWN:0 5 21 ? * * *"
+    firework: "$CRON_FIREWORK:0 59 23 31 12 * *"
